@@ -13,10 +13,14 @@ const Index = () => {
     { number: 6, title: "The Osteen Files - Exhibit L", duration: "3:49" },
     { number: 7, title: "A Warrant For A Lie", duration: "3:33" },
     { number: 8, title: "The Crowder Files", duration: "3:32" },
-    { number: 9, title: "Integrity In Mississippi's Justice System Died A Long Long Time Ago", duration: "3:47" },
-    { number: 10, title: "State of Corruption", duration: "3:59" },
-    { number: 11, title: "The Fight", duration: "3:35" },
-    { number: 12, title: "Only The Beginning", duration: "3:38" },
+    { number: 9, title: "Eleven Months Too Long", duration: "3:47" },
+    { number: 10, title: "Caught Red Handed", duration: "3:59" },
+    { number: 11, title: "Osteen Lied", duration: "3:35" },
+    { number: 12, title: "Land of the Free, Unless its me", duration: "3:38" },
+    { number: 13, title: "She Called The State", duration: "3:42" },
+    { number: 14, title: "Osteen's Fall", duration: "3:51" },
+    { number: 15, title: "The Gaslight Anthem", duration: "4:05" },
+    { number: 16, title: "Governor's Gone Too Far", duration: "3:55" },
   ];
 
   const stories = [
