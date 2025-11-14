@@ -8,50 +8,51 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 220 20% 8%;
+    --background: 0 0% 3%;
     --foreground: 0 0% 98%;
 
-    --card: 220 18% 12%;
+    --card: 0 0% 6%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 220 20% 10%;
+    --popover: 0 0% 6%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 0 75% 55%;
+    --primary: 0 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 60% 50%;
+    --secondary: 217 100% 40%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 15% 20%;
-    --muted-foreground: 220 10% 65%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 210 100% 50%;
+    --accent: 0 100% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 100% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 20%;
-    --input: 220 15% 20%;
-    --ring: 0 75% 55%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 100% 50%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
     
-    /* Custom colors for music theme */
-    --police-red: 0 75% 55%;
-    --justice-blue: 220 60% 50%;
-    --urban-dark: 220 20% 8%;
-    --glow-red: 0 75% 55%;
-    --glow-blue: 220 60% 50%;
+    /* Custom colors for accountability theme */
+    --police-red: 0 100% 50%;
+    --justice-blue: 217 100% 40%;
+    --warning-red: 0 100% 60%;
+    --reckoning-dark: 0 0% 0%;
+    --blood-red: 0 85% 35%;
+    --steel-blue: 210 100% 30%;
+    
+    /* Shadows & Effects */
+    --shadow-red: 0 100% 50%;
+    --shadow-blue: 217 100% 40%;
     
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(0 75% 15%) 0%, hsl(220 60% 15%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(220 18% 12%) 0%, hsl(220 20% 8%) 100%);
-    
-    /* Shadows */
-    --shadow-glow-red: 0 0 40px hsl(0 75% 55% / 0.3);
-    --shadow-glow-blue: 0 0 40px hsl(220 60% 50% / 0.3);
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 0%) 0%, hsl(0 0% 3%) 50%, hsl(0 0% 0%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 6%) 0%, hsl(0 0% 3%) 100%);
     
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -74,33 +75,33 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 220 20% 8%;
+    --background: 0 0% 3%;
     --foreground: 0 0% 98%;
 
-    --card: 220 18% 12%;
+    --card: 0 0% 6%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 220 20% 10%;
+    --popover: 0 0% 6%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 0 75% 55%;
+    --primary: 0 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 60% 50%;
+    --secondary: 217 100% 40%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 15% 20%;
-    --muted-foreground: 220 10% 65%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 210 100% 50%;
+    --accent: 0 100% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 100% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 20%;
-    --input: 220 15% 20%;
-    --ring: 0 75% 55%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 100% 50%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -121,16 +122,36 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
   
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-red {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--shadow-red) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--shadow-red) / 0.6);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
   
   .animate-fade-in {
     animation: fade-in 0.8s ease-out forwards;

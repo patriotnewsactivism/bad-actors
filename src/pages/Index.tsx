@@ -63,13 +63,12 @@ This is North Mississippi's warning: we're not staying silent anymore.`
       
       <UpcomingAlbums albums={upcomingAlbums} />
       
-      {/* Footer */}
-      <footer className="py-12 border-t border-border">
+      <footer className="py-16 border-t-2 border-police-red/30 bg-gradient-to-b from-background to-reckoning-dark">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-muted-foreground">
+          <p className="text-foreground font-bold text-lg">
             © 2025 Don Matthews - Bad Actors. All rights reserved.
           </p>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="text-police-red font-black text-xl mt-3 tracking-wider uppercase">
             Truth. Justice. Accountability.
           </p>
         </div>

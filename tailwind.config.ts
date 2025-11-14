@@ -49,9 +49,10 @@ export default {
         },
         "police-red": "hsl(var(--police-red))",
         "justice-blue": "hsl(var(--justice-blue))",
-        "urban-dark": "hsl(var(--urban-dark))",
-        "glow-red": "hsl(var(--glow-red))",
-        "glow-blue": "hsl(var(--glow-blue))",
+        "warning-red": "hsl(var(--warning-red))",
+        "reckoning-dark": "hsl(var(--reckoning-dark))",
+        "blood-red": "hsl(var(--blood-red))",
+        "steel-blue": "hsl(var(--steel-blue))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
