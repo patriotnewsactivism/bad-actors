@@ -39,14 +39,14 @@ const AlbumHero = ({ title, artist, releaseDate, embedUrl }: AlbumHeroProps) => 
           {/* Tagline */}
           <div className="text-center mb-8 animate-fade-in" style={{ animationDelay: "0.15s" }}>
             <p className="text-police-red text-xl md:text-2xl font-bold tracking-wider uppercase">
-              Truth • Justice • Accountability
+              Truth | Justice | Accountability
             </p>
           </div>
           
           {/* Artist & Release */}
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-14 text-muted-foreground animate-fade-in" style={{ animationDelay: "0.2s" }}>
             <span className="text-2xl font-semibold text-foreground">{artist}</span>
-            <span className="hidden md:inline text-police-red">▪</span>
+            <span className="hidden md:inline text-police-red">|</span>
             <span className="text-xl font-medium">{releaseDate}</span>
           </div>
 
@@ -71,3 +71,4 @@ const AlbumHero = ({ title, artist, releaseDate, embedUrl }: AlbumHeroProps) => 
 };
 
 export default AlbumHero;
+

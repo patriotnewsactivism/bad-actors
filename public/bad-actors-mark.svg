@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title desc">
+  <title id="title">Bad Actors Monogram</title>
+  <desc id="desc">Stacked BA initials rendered in crimson gradient on black background.</desc>
+  <defs>
+    <linearGradient id="blood" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080808" />
+      <stop offset="60%" stop-color="#7a040a" />
+      <stop offset="100%" stop-color="#c1121f" />
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="18" fill="url(#blood)" />
+  <rect x="6" y="6" width="108" height="108" rx="16" fill="none" stroke="#f5f5f5" stroke-width="2" opacity="0.45" />
+  <path d="M32 88V32h20c14 0 24 7.5 24 19 0 8.5-5.5 15-14.5 17.5L83 88H68L52 69.5h-6V88H32zm14-32.5h7.5c6 0 9-3 9-7.5 0-4.2-3-6.8-9-6.8H46v14.3z" fill="#f8f8f8" />
+  <path d="M67 32h21c14 0 22 8.5 22 20.5 0 12.5-8.2 21.5-24 21.5h-9V88H67V32zm29 21.2c0-5.3-3.8-8.9-10-8.9h-5.8V62H86c6.1 0 10-3.1 10-8.8z" fill="#f8f8f8" opacity="0.9" />
+</svg>

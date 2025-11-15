@@ -148,6 +148,7 @@ const TrackList = ({ tracks, stories }: TrackListProps) => {
 
               return (
                 <div
+                  id={`track-${track.number}`}
                   key={track.number}
                   onClick={() => hasStory && scrollToStory(track.number)}
                   className={`flex items-center gap-4 p-5 border-b-2 border-border/30 last:border-b-0 transition-all duration-300 group relative ${

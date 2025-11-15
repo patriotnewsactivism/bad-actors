@@ -1,0 +1,21 @@
+{
+  "name": "Bad Actors",
+  "short_name": "BadActors",
+  "description": "The official Bad Actors dossier and album hub exposing corruption across North Mississippi.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#c1121f",
+  "icons": [
+    {
+      "src": "/bad-actors-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/bad-actors-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

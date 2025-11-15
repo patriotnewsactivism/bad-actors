@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="cardTitle cardDesc">
+  <title id="cardTitle">Bad Actors Social Share Card</title>
+  <desc id="cardDesc">Red and black gradient card featuring Bad Actors album messaging.</desc>
+  <defs>
+    <linearGradient id="flare" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#040404" />
+      <stop offset="70%" stop-color="#3b0003" />
+      <stop offset="100%" stop-color="#c1121f" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#020202" />
+  <rect x="30" y="30" width="1140" height="570" rx="32" fill="url(#flare)" stroke="#c1121f" stroke-width="3" />
+  <text x="80" y="180" fill="#f5f5f5" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="92" letter-spacing="4">BAD ACTORS</text>
+  <text x="80" y="260" fill="#f5f5f5" font-family="'Arial Black', 'Helvetica Neue', sans-serif" font-size="42" letter-spacing="8">DON MATTHEWS</text>
+  <text x="80" y="330" fill="#c1121f" font-family="'Arial', sans-serif" font-size="32" letter-spacing="12">TRUTH | JUSTICE | ACCOUNTABILITY</text>
+  <text x="80" y="420" fill="#f5f5f5" font-family="'Arial', sans-serif" font-size="28" opacity="0.85">
+    Each track documents real corruption claims, sworn eyewitness statements, and primary-source files
+  </text>
+  <text x="80" y="470" fill="#f5f5f5" font-family="'Arial', sans-serif" font-size="28" opacity="0.85">
+    from North Mississippi and beyond. Stream the dossier. Amplify the evidence. Force accountability.
+  </text>
+  <text x="80" y="545" fill="#c1121f" font-family="'Arial Black', sans-serif" font-size="34">
+    badactors.fm • #StopBadActors
+  </text>
+  <circle cx="980" cy="145" r="110" fill="none" stroke="#c1121f" stroke-width="4" opacity="0.65" />
+  <text x="910" y="170" fill="#f5f5f5" font-family="'Arial Black', sans-serif" font-size="90">BA</text>
+</svg>
