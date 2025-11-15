@@ -30,9 +30,10 @@ const StoriesSection = ({ stories }: StoriesSectionProps) => {
 
         <div className="max-w-4xl mx-auto space-y-8">
           {stories.map((story, index) => (
-            <div 
+            <div
               key={index}
-              className="bg-black/70 backdrop-blur-sm rounded-xl border-2 border-police-red/20 p-8 hover:border-police-red/60 hover:shadow-[0_0_30px_rgba(255,0,0,0.2)] transition-all duration-300"
+              id={story.trackNumber ? `story-track-${story.trackNumber}` : undefined}
+              className="bg-black/70 backdrop-blur-sm rounded-xl border-2 border-police-red/20 p-8 hover:border-police-red/60 hover:shadow-[0_0_30px_rgba(255,0,0,0.2)] transition-all duration-500 scroll-mt-24"
             >
               {story.trackNumber && (
                 <div className="inline-block px-4 py-2 rounded-sm bg-gradient-to-r from-police-red to-blood-red text-sm font-black mb-6 shadow-[0_0_20px_rgba(255,0,0,0.3)] uppercase tracking-wider">

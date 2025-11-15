@@ -61,7 +61,7 @@ This is North Mississippi's warning: we're not staying silent anymore.`
         embedUrl="https://www.bandlab.com/embed/collection/?id=8ea7105d-acc1-f011-8195-6045bd30a4b0"
       />
       
-      <TrackList tracks={tracks} />
+      <TrackList tracks={tracks} stories={stories} />
       
       <StoriesSection stories={stories} />
       
