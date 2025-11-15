@@ -37,6 +37,48 @@ The title "Bad Actors" refers to those in positions of power who abuse their aut
 
 This is North Mississippi's warning: we're not staying silent anymore.`
     },
+    {
+      trackNumber: 6,
+      title: "The Osteen Files - Exhibit L",
+      content: `Exhibit L. Just one letter. One piece of evidence in a mountain of documentation that reveals a pattern of misconduct so extensive, it required its own filing system.
+
+This track chronicles the beginning of the Osteen investigation—where the first documents surfaced, where the lies began to unravel, and where the truth started demanding attention. When you need to alphabetize your corruption, you know the reckoning is coming.`
+    },
+    {
+      trackNumber: 7,
+      title: "A Warrant For A Lie",
+      content: `They swore an oath. They signed their names. They stood before a judge and declared it was the truth. But it wasn't. This is the story of a warrant built on fabrications—a legal document that should represent justice, instead weaponized to destroy an innocent life.
+
+When law enforcement lies under oath to obtain a warrant, they don't just break the law—they break the very foundation of justice itself. This track names names and presents facts.`
+    },
+    {
+      trackNumber: 11,
+      title: "Osteen Lied",
+      content: `Three words. Undeniable truth. Documented proof. Osteen lied. Not once. Not by accident. Not a misunderstanding. A calculated, deliberate, provable lie that destroyed lives and perverted justice.
+
+This track lays out the timeline, the contradictions, the evidence, and the receipts. When someone in power lies, they must be held accountable. This is that accountability, set to music.`
+    },
+    {
+      trackNumber: 14,
+      title: "Osteen's Fall",
+      content: `Every corrupt empire eventually crumbles. Every bad actor eventually faces their reckoning. This track chronicles the downfall—when the evidence became overwhelming, when the lies could no longer be sustained, when justice finally began to turn its gaze toward the guilty.
+
+This isn't about revenge. It's about accountability. It's about watching corruption collapse under the weight of its own deception. The fall is inevitable when you build your career on lies.`
+    },
+    {
+      trackNumber: 15,
+      title: "The Gaslight Anthem",
+      content: `"You're crazy. That didn't happen. You're misremembering. Nobody will believe you." The anthem of the gaslighter. The song of the corrupt who rely on confusion, doubt, and psychological manipulation to escape accountability.
+
+This track reclaims reality. It documents the gaslighting tactics used by those in power to make victims question their own truth. But when you have evidence, when you have documentation, when you have receipts—the gaslighting stops working.`
+    },
+    {
+      trackNumber: 16,
+      title: "Governor's Gone Too Far",
+      content: `When corruption reaches the highest levels of state government, when the governor's office itself becomes complicit in covering up injustice, someone has to say it out loud: The Governor's Gone Too Far.
+
+This closing track pulls no punches. It connects the dots from local corruption to state-level complicity. It names the failures of leadership that allowed bad actors to operate with impunity. This is the call for accountability at every level of government. The reckoning doesn't stop at county lines.`
+    },
   ];
 
   const upcomingAlbums = [
@@ -44,11 +86,6 @@ This is North Mississippi's warning: we're not staying silent anymore.`
       title: "Bad Actors Volume 2",
       status: "In Production",
       description: "The story continues with even more documented cases of corruption, injustice, and the fight for accountability. More names. More evidence. More truth."
-    },
-    {
-      title: "Untitled Project",
-      status: "Planning",
-      description: "The movement is growing. Stay tuned for announcements about the next chapter in this journey for justice and truth in music."
     },
   ];
 
