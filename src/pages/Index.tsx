@@ -140,7 +140,7 @@ This closing track pulls no punches. It connects the dots from local corruption 
       <AlbumHero 
         title="Bad Actors - The Album"
         artist="Don Matthews"
-        releaseDate="Released January 2025"
+        releaseDate="Released September 1, 2025"
         embedUrl="https://www.bandlab.com/embed/collection/?id=8ea7105d-acc1-f011-8195-6045bd30a4b0"
       />
       
