@@ -9,16 +9,18 @@ interface AlbumHeroProps {
 
 const AlbumHero = ({ title, artist, releaseDate, embedUrl }: AlbumHeroProps) => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-reckoning-dark via-background to-reckoning-dark">
-      {/* Intense red warning lines */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-police-red to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-police-red to-transparent" />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-reckoning-dark">
+      {/* Crime scene tape pattern */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-crime-yellow" />
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-crime-yellow" />
+        <div className="absolute top-8 left-0 right-0 h-0.5 bg-police-red opacity-60" />
+        <div className="absolute bottom-8 left-0 right-0 h-0.5 bg-police-red opacity-60" />
       </div>
       
-      {/* Aggressive glow effects */}
-      <div className="absolute top-20 left-10 w-[600px] h-[600px] bg-police-red/30 rounded-full blur-[150px] animate-pulse" />
-      <div className="absolute bottom-20 right-10 w-[600px] h-[600px] bg-justice-blue/30 rounded-full blur-[150px] animate-pulse" style={{ animationDelay: "1s" }} />
+      {/* Harsh spotlight effects */}
+      <div className="absolute top-0 left-1/4 w-[400px] h-[600px] bg-police-red/20 blur-[100px]" />
+      <div className="absolute bottom-0 right-1/4 w-[400px] h-[600px] bg-police-red/15 blur-[100px]" />
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-5xl mx-auto">

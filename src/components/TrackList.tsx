@@ -64,12 +64,11 @@ const TrackList = ({ tracks, stories }: TrackListProps) => {
   const remainingStories = totalTracks - storiesCount;
 
   return (
-    <section className="py-24 relative bg-gradient-to-b from-background via-reckoning-dark to-background overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-1/4 left-0 w-96 h-96 bg-police-red rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-justice-blue rounded-full blur-[120px] animate-pulse" style={{ animationDelay: "1.5s" }} />
-      </div>
+    <section className="py-24 relative bg-reckoning-dark overflow-hidden">
+      {/* Hard border lines */}
+      <div className="absolute inset-x-0 top-0 h-0.5 bg-police-red" />
+      <div className="absolute inset-x-0 bottom-0 h-0.5 bg-police-red" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_hsl(0_100%_45%/0.08)_0%,_transparent_70%)]" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">

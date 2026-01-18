@@ -13,16 +13,12 @@ interface StoriesSectionProps {
 
 const StoriesSection = ({ stories }: StoriesSectionProps) => {
   return (
-    <section className="py-24 relative bg-gradient-to-b from-reckoning-dark via-background to-reckoning-dark overflow-hidden">
-      {/* Dramatic red accent lines */}
-      <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-police-red to-transparent opacity-70 shadow-[0_0_20px_rgba(255,0,0,0.5)]" />
-      <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-transparent via-police-red to-transparent opacity-70 shadow-[0_0_20px_rgba(255,0,0,0.5)]" />
-
-      {/* Pulsing background glow */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-police-red rounded-full blur-[150px] animate-pulse" />
-        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-warning-red rounded-full blur-[150px] animate-pulse" style={{ animationDelay: "2s" }} />
-      </div>
+    <section className="py-24 relative bg-reckoning-dark overflow-hidden">
+      {/* Crime scene borders */}
+      <div className="absolute inset-x-0 top-0 h-1 bg-crime-yellow" />
+      <div className="absolute inset-x-0 bottom-0 h-1 bg-crime-yellow" />
+      <div className="absolute inset-x-0 top-4 h-0.5 bg-police-red" />
+      <div className="absolute inset-x-0 bottom-4 h-0.5 bg-police-red" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex items-center justify-center gap-4 mb-12">

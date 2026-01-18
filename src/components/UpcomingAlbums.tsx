@@ -13,13 +13,11 @@ interface UpcomingAlbumsProps {
 
 const UpcomingAlbums = ({ albums }: UpcomingAlbumsProps) => {
   return (
-    <section className="py-24 relative bg-gradient-to-b from-background via-reckoning-dark to-background overflow-hidden">
-      {/* Dramatic background effects */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-justice-blue rounded-full blur-[150px] animate-pulse" />
-      </div>
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-justice-blue to-transparent opacity-50" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-police-red to-transparent opacity-50" />
+    <section className="py-24 relative bg-reckoning-dark overflow-hidden">
+      {/* Stark borders */}
+      <div className="absolute inset-x-0 top-0 h-0.5 bg-justice-blue" />
+      <div className="absolute inset-x-0 bottom-0 h-0.5 bg-police-red" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_hsl(210_100%_35%/0.1)_0%,_transparent_60%)]" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex items-center justify-center gap-4 mb-12">
