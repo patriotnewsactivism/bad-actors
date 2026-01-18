@@ -10,10 +10,11 @@ interface AlbumHeroProps {
   artist: string;
   releaseDate: string;
   youtubePlaylistId: string;
+  currentTrack: number;
   streamingLinks: StreamingLink[];
 }
 
-const AlbumHero = ({ title, artist, releaseDate, youtubePlaylistId, streamingLinks }: AlbumHeroProps) => {
+const AlbumHero = ({ title, artist, releaseDate, youtubePlaylistId, currentTrack, streamingLinks }: AlbumHeroProps) => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
       {/* Crime scene tape pattern */}
@@ -73,10 +74,11 @@ const AlbumHero = ({ title, artist, releaseDate, youtubePlaylistId, streamingLin
           {/* YouTube Player */}
           <div className="relative animate-fade-in" style={{ animationDelay: "0.3s" }}>
             <div className="relative bg-black border-2 border-police-red overflow-hidden shadow-[0_0_50px_hsl(var(--police-red)/0.3)]">
-              <iframe 
-                width="100%" 
-                height="450" 
-                src={`https://www.youtube.com/embed/videoseries?list=${youtubePlaylistId}`}
+              <iframe
+                key={`track-${currentTrack}`}
+                width="100%"
+                height="450"
+                src={`https://www.youtube.com/embed/videoseries?list=${youtubePlaylistId}&index=${currentTrack}&autoplay=1`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="w-full"

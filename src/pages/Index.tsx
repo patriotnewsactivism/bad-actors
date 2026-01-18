@@ -1,9 +1,11 @@
+import { useState } from "react";
 import AlbumHero from "@/components/AlbumHero";
 import TrackList from "@/components/TrackList";
 import StoriesSection from "@/components/StoriesSection";
 import UpcomingAlbums from "@/components/UpcomingAlbums";
 
 const Index = () => {
+  const [currentTrack, setCurrentTrack] = useState<number>(1);
   const tracks = [
     { number: 1, title: "Silence Ain't Consent", duration: "3:33" },
     { number: 2, title: "Unbroken", duration: "5:04" },
@@ -192,11 +194,12 @@ This isn't about a failed marriage. It's about weaponized lies, false accusation
 
   return (
     <div className="min-h-screen bg-background">
-      <AlbumHero 
+      <AlbumHero
         title="Bad Actors - The Album"
         artist="Don Matthews"
         releaseDate="Released September 1, 2025"
         youtubePlaylistId="OLAK5uy_lQdVnTChfibpXLzkkT_BcrpjPxxqcx5fs"
+        currentTrack={currentTrack}
         streamingLinks={[
           { platform: "Apple Music", url: "https://music.apple.com/au/album/bad-actors-volume-1/1863402949" },
           { platform: "Spotify", url: "https://open.spotify.com/album/bad-actors-volume-1" },
@@ -204,8 +207,13 @@ This isn't about a failed marriage. It's about weaponized lies, false accusation
           { platform: "DistroKid", url: "https://distrokid.com/hyperfollow/donmatthews/bad-actors-volume-1" },
         ]}
       />
-      
-      <TrackList tracks={tracks} stories={stories} />
+
+      <TrackList
+        tracks={tracks}
+        stories={stories}
+        currentTrack={currentTrack}
+        onTrackSelect={setCurrentTrack}
+      />
       
       <StoriesSection stories={stories} />
       

@@ -1,4 +1,4 @@
-import { BookOpen, FileText, Filter, Zap } from "lucide-react";
+import { BookOpen, FileText, Filter, Zap, Play, Music } from "lucide-react";
 import { useState } from "react";
 
 interface Track {
@@ -16,11 +16,13 @@ interface Story {
 interface TrackListProps {
   tracks: Track[];
   stories: Story[];
+  currentTrack: number;
+  onTrackSelect: (trackNumber: number) => void;
 }
 
 type FilterType = "all" | "withStories" | "comingSoon";
 
-const TrackList = ({ tracks, stories }: TrackListProps) => {
+const TrackList = ({ tracks, stories, currentTrack, onTrackSelect }: TrackListProps) => {
   const [filter, setFilter] = useState<FilterType>("all");
   const [clickedTrack, setClickedTrack] = useState<number | null>(null);
 
@@ -32,7 +34,23 @@ const TrackList = ({ tracks, stories }: TrackListProps) => {
     }
   });
 
-  const scrollToStory = (trackNumber: number) => {
+  const handleTrackClick = (trackNumber: number) => {
+    // Always play the track
+    onTrackSelect(trackNumber);
+
+    // Scroll to top to show the player
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+    // Visual feedback
+    setClickedTrack(trackNumber);
+    setTimeout(() => setClickedTrack(null), 600);
+  };
+
+  const scrollToStory = (trackNumber: number, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent track playback when clicking story icon
     setClickedTrack(trackNumber);
     setTimeout(() => setClickedTrack(null), 600);
 
@@ -77,7 +95,7 @@ const TrackList = ({ tracks, stories }: TrackListProps) => {
             <Zap className="w-12 h-12 text-police-red" fill="currentColor" />
           </div>
           <p className="text-muted-foreground text-xl max-w-3xl mx-auto mb-8">
-            Explore the testimony behind each track. <span className="text-police-red font-bold">Click tracks with the book icon</span> to read their stories below.
+            <span className="text-police-red font-bold">Click any track to play it</span> in the player above. Tracks with the <BookOpen className="w-5 h-5 inline mx-1 text-police-red" /> icon have detailed stories below.
           </p>
 
           {/* Progress Bar */}
@@ -139,49 +157,73 @@ const TrackList = ({ tracks, stories }: TrackListProps) => {
             {filteredTracks.map((track) => {
               const hasStory = trackStoryMap.has(track.number);
               const isFlashing = clickedTrack === track.number;
+              const isCurrentTrack = currentTrack === track.number;
 
               return (
                 <div
                   id={`track-${track.number}`}
                   key={track.number}
-                  onClick={() => hasStory && scrollToStory(track.number)}
-                  className={`flex items-center gap-4 p-5 border-b-2 border-border last:border-b-0 transition-all duration-300 group relative ${
-                    hasStory
-                      ? 'cursor-pointer hover:bg-police-red/10'
-                      : 'opacity-60'
-                  } ${isFlashing ? 'bg-police-red/20' : ''}`}
+                  onClick={() => handleTrackClick(track.number)}
+                  className={`flex items-center gap-4 p-5 border-b-2 border-border last:border-b-0 transition-all duration-300 group relative cursor-pointer ${
+                    isCurrentTrack
+                      ? 'bg-police-red/20 border-police-red'
+                      : 'hover:bg-police-red/10'
+                  } ${isFlashing ? 'bg-police-red/30' : ''}`}
                 >
+                  {/* Track Number / Play Button */}
                   <div className={`flex-shrink-0 w-12 h-12 flex items-center justify-center transition-all border-2 ${
-                    hasStory
-                      ? 'bg-police-red border-police-red group-hover:scale-110'
-                      : 'bg-muted border-muted-foreground'
+                    isCurrentTrack
+                      ? 'bg-police-red border-police-red scale-110'
+                      : 'bg-muted border-muted-foreground group-hover:bg-police-red group-hover:border-police-red group-hover:scale-105'
                   } ${isFlashing ? 'scale-125' : ''}`}>
-                    <span className="text-base font-black text-white">{track.number}</span>
+                    {isCurrentTrack ? (
+                      <Music className="w-6 h-6 text-white animate-pulse" />
+                    ) : (
+                      <span className="text-base font-black text-white group-hover:hidden">{track.number}</span>
+                    )}
+                    {!isCurrentTrack && (
+                      <Play className="w-6 h-6 text-white hidden group-hover:block" fill="currentColor" />
+                    )}
                   </div>
 
+                  {/* Track Title and Icons */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3">
                       <h3 className={`font-bold text-lg truncate transition-colors ${
-                        hasStory
-                          ? 'text-foreground group-hover:text-police-red'
-                          : 'text-muted-foreground'
+                        isCurrentTrack
+                          ? 'text-police-red'
+                          : 'text-foreground group-hover:text-police-red'
                       }`}>
                         {track.title}
                       </h3>
                       {hasStory && (
-                        <BookOpen className="w-5 h-5 text-police-red flex-shrink-0" />
+                        <button
+                          onClick={(e) => scrollToStory(track.number, e)}
+                          className="flex-shrink-0 hover:scale-125 transition-transform"
+                          title="Read track story"
+                        >
+                          <BookOpen className="w-5 h-5 text-police-red" />
+                        </button>
                       )}
                     </div>
-                    {!hasStory && (
+                    {isCurrentTrack && (
+                      <p className="text-sm text-police-red font-bold mt-1 animate-pulse">Now Playing</p>
+                    )}
+                    {!isCurrentTrack && !hasStory && (
                       <p className="text-sm text-muted-foreground mt-1">Story coming soon</p>
                     )}
                   </div>
 
+                  {/* Duration and Play Icon */}
                   <div className="flex items-center gap-4">
-                    <span className="text-muted-foreground text-base font-mono font-semibold">{track.duration}</span>
-                    {hasStory && (
-                      <FileText className="w-6 h-6 text-police-red opacity-0 group-hover:opacity-100 transition-opacity" />
-                    )}
+                    <span className={`text-base font-mono font-semibold ${
+                      isCurrentTrack ? 'text-police-red' : 'text-muted-foreground'
+                    }`}>{track.duration}</span>
+                    <Play className={`w-6 h-6 transition-opacity ${
+                      isCurrentTrack
+                        ? 'text-police-red opacity-100'
+                        : 'text-police-red opacity-0 group-hover:opacity-100'
+                    }`} fill="currentColor" />
                   </div>
                 </div>
               );
