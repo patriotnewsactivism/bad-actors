@@ -8,51 +8,44 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 2%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 95%;
 
-    --card: 0 0% 5%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 3%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 5%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 3%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 0 100% 45%;
+    --primary: 0 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 100% 35%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 45 100% 50%;
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 55%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 0 0% 50%;
 
-    --accent: 0 100% 45%;
+    --accent: 0 100% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 100% 45%;
+    --destructive: 0 100% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 100% 20%;
-    --input: 0 0% 12%;
-    --ring: 0 100% 45%;
+    --border: 0 100% 25%;
+    --input: 0 0% 8%;
+    --ring: 0 100% 50%;
 
     --radius: 0.25rem;
     
-    /* Custom colors for accountability theme */
-    --police-red: 0 100% 45%;
-    --justice-blue: 210 100% 35%;
-    --warning-red: 0 100% 55%;
-    --reckoning-dark: 0 0% 0%;
-    --blood-red: 0 80% 25%;
-    --steel-blue: 210 100% 25%;
+    /* Custom colors - SOLID, NO GRADIENTS */
+    --police-red: 0 100% 50%;
     --crime-yellow: 45 100% 50%;
+    --blood-red: 0 70% 30%;
+    --reckoning-dark: 0 0% 0%;
     
-    /* Shadows & Effects */
-    --shadow-red: 0 100% 45%;
-    --shadow-blue: 210 100% 35%;
-    
-    /* Transitions */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Shadows */
+    --shadow-red: 0 100% 50%;
 
     --sidebar-background: 0 0% 98%;
 

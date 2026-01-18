@@ -1,5 +1,4 @@
 import { Calendar, Disc3 } from "lucide-react";
-import { Button } from "./ui/button";
 
 interface Album {
   title: string;
@@ -13,19 +12,16 @@ interface UpcomingAlbumsProps {
 
 const UpcomingAlbums = ({ albums }: UpcomingAlbumsProps) => {
   return (
-    <section className="py-24 relative bg-reckoning-dark overflow-hidden">
+    <section className="py-24 relative bg-black overflow-hidden">
       {/* Stark borders */}
-      <div className="absolute inset-x-0 top-0 h-0.5 bg-justice-blue" />
+      <div className="absolute inset-x-0 top-0 h-1 bg-crime-yellow" />
       <div className="absolute inset-x-0 bottom-0 h-0.5 bg-police-red" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_hsl(210_100%_35%/0.1)_0%,_transparent_60%)]" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex items-center justify-center gap-4 mb-12">
-          <Calendar className="w-12 h-12 text-justice-blue animate-pulse" strokeWidth={2.5} />
-          <h2 className="text-5xl md:text-6xl font-black tracking-tight">
-            <span className="bg-gradient-to-r from-justice-blue via-steel-blue to-police-red bg-clip-text text-transparent">
-              THE RECKONING CONTINUES
-            </span>
+          <Calendar className="w-12 h-12 text-crime-yellow" strokeWidth={2.5} />
+          <h2 className="text-5xl md:text-6xl font-black tracking-tight text-crime-yellow">
+            THE RECKONING CONTINUES
           </h2>
         </div>
 
@@ -37,33 +33,27 @@ const UpcomingAlbums = ({ albums }: UpcomingAlbumsProps) => {
           {albums.map((album, index) => (
             <div
               key={index}
-              className="group relative bg-black/80 backdrop-blur-sm rounded-xl border-2 border-justice-blue/40 p-10 hover:border-justice-blue/80 hover:shadow-[0_0_60px_rgba(33,150,243,0.4)] transition-all duration-500 overflow-hidden"
+              className="group bg-black border-2 border-crime-yellow p-10 hover:bg-crime-yellow/5 transition-all duration-300"
             >
-              {/* Animated glow on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-justice-blue/20 to-police-red/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="absolute -inset-1 bg-gradient-to-r from-justice-blue via-police-red to-justice-blue opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500" />
+              <div className="flex items-center gap-4 mb-6">
+                <Disc3 className="w-12 h-12 text-crime-yellow group-hover:rotate-180 transition-transform duration-700" />
+                <span className="text-lg font-black text-black bg-crime-yellow uppercase tracking-wider px-4 py-2">
+                  {album.status}
+                </span>
+              </div>
 
-              <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-6">
-                  <Disc3 className="w-12 h-12 text-justice-blue group-hover:rotate-180 transition-transform duration-700" />
-                  <span className="text-lg font-black text-justice-blue uppercase tracking-wider border-2 border-justice-blue/60 px-4 py-2 rounded-sm shadow-[0_0_20px_rgba(33,150,243,0.3)]">
-                    {album.status}
-                  </span>
-                </div>
+              <h3 className="text-4xl md:text-5xl font-black mb-6 text-foreground group-hover:text-crime-yellow transition-colors">
+                {album.title}
+              </h3>
 
-                <h3 className="text-4xl md:text-5xl font-black mb-6 text-foreground group-hover:text-justice-blue transition-colors">
-                  {album.title}
-                </h3>
+              <p className="text-muted-foreground leading-relaxed text-xl">
+                {album.description}
+              </p>
 
-                <p className="text-muted-foreground leading-relaxed text-xl">
-                  {album.description}
+              <div className="mt-8 pt-8 border-t-2 border-crime-yellow/30">
+                <p className="text-police-red font-bold text-lg uppercase tracking-wider">
+                  Justice delayed is justice denied. But justice is coming.
                 </p>
-
-                <div className="mt-8 pt-8 border-t-2 border-justice-blue/20">
-                  <p className="text-police-red font-bold text-lg uppercase tracking-wider">
-                    Justice delayed is justice denied. But justice is coming.
-                  </p>
-                </div>
               </div>
             </div>
           ))}

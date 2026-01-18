@@ -48,11 +48,9 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         "police-red": "hsl(var(--police-red))",
-        "justice-blue": "hsl(var(--justice-blue))",
-        "warning-red": "hsl(var(--warning-red))",
+        "crime-yellow": "hsl(var(--crime-yellow))",
         "reckoning-dark": "hsl(var(--reckoning-dark))",
         "blood-red": "hsl(var(--blood-red))",
-        "steel-blue": "hsl(var(--steel-blue))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
