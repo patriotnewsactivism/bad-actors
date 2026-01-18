@@ -5,22 +5,23 @@ import UpcomingAlbums from "@/components/UpcomingAlbums";
 
 const Index = () => {
   const tracks = [
-    { number: 1, title: "Silence Ain't Consent (North Mississippi's Warning)", duration: "3:32" },
-    { number: 2, title: "Unbroken", duration: "5:03" },
-    { number: 3, title: "In The Shadows Tonight (The Reconing)", duration: "4:18" },
-    { number: 4, title: "Double Dipped", duration: "4:16" },
-    { number: 5, title: "Morgan County Blues", duration: "4:03" },
-    { number: 6, title: "The Osteen Files - Exhibit L", duration: "3:49" },
-    { number: 7, title: "A Warrant For A Lie", duration: "3:33" },
-    { number: 8, title: "The Crowder Files", duration: "3:32" },
-    { number: 9, title: "Eleven Months Too Long", duration: "3:47" },
-    { number: 10, title: "Caught Red Handed", duration: "3:59" },
-    { number: 11, title: "Osteen Lied", duration: "3:35" },
-    { number: 12, title: "Land of the Free, Unless its me", duration: "3:38" },
-    { number: 13, title: "She Called The State", duration: "3:42" },
-    { number: 14, title: "Osteen's Fall", duration: "3:51" },
-    { number: 15, title: "The Gaslight Anthem", duration: "4:05" },
-    { number: 16, title: "Governor's Gone Too Far", duration: "3:55" },
+    { number: 1, title: "Silence Ain't Consent", duration: "3:33" },
+    { number: 2, title: "Unbroken", duration: "5:04" },
+    { number: 3, title: "In the Shadows Tonight", duration: "4:19" },
+    { number: 4, title: "Double Dipped", duration: "4:17" },
+    { number: 5, title: "Morgan County Blues", duration: "4:04" },
+    { number: 6, title: "The Osteen Files (Exhibit L)", duration: "3:50" },
+    { number: 7, title: "A Warrant For A Lie", duration: "3:34" },
+    { number: 8, title: "The Crowder Files", duration: "3:33" },
+    { number: 9, title: "Eleven Months Too Long", duration: "3:48" },
+    { number: 10, title: "Caught Red Handed", duration: "4:00" },
+    { number: 11, title: "Osteen Lied", duration: "3:36" },
+    { number: 12, title: "Land of the Free, Unless Its Me", duration: "4:12" },
+    { number: 13, title: "She Called The State", duration: "3:55" },
+    { number: 14, title: "Osteen's Fall", duration: "3:27" },
+    { number: 15, title: "The Gaslight Anthem", duration: "2:29" },
+    { number: 16, title: "Governors Gone Too Far", duration: "3:22" },
+    { number: 17, title: "Scandalous", duration: "3:14" },
   ];
 
   const stories = [
@@ -50,7 +51,7 @@ Musically, the track blends defiance with resilience, creating an anthem not jus
     },
     {
       trackNumber: 3,
-      title: "In the Shadows Tonight (The Reckoning)",
+      title: "In the Shadows Tonight",
       content: `"In the Shadows Tonight (The Reckoning)" stands as one of the most confrontational and revealing tracks on Bad Actors. Rather than focusing solely on systemic actors or government power, this song turns its gaze toward a more intimate origin of destruction: Phyllis "Liz" Crowder, the artist's ex, whose false accusations and manipulative actions set in motion many of the legal battles and human-rights violations that followed.
 
 The track chronicles the pattern of personal betrayal that grew into institutional harm. It highlights how misleading claims, emotional manipulation, and weaponized allegations did not remain private conflicts — they ignited a chain reaction that spiraled into police involvement, custody warfare, interstate surveillance, and coordinated retaliation. The song holds not just Crowder accountable, but the wider circle of individuals who amplified her claims and contributed to the ongoing campaign against him.
@@ -85,7 +86,7 @@ By dedicating an entire song to Grover's case, Matthews amplifies a voice that t
     },
     {
       trackNumber: 6,
-      title: "The Osteen Files - Exhibit L",
+      title: "The Osteen Files (Exhibit L)",
       content: `Exhibit L. Just one letter. One piece of evidence in a mountain of documentation that reveals a pattern of misconduct so extensive, it required its own filing system.
 
 This track chronicles the beginning of the Osteen investigation—where the first documents surfaced, where the lies began to unravel, and where the truth started demanding attention. When you need to alphabetize your corruption, you know the reckoning is coming.`
@@ -98,11 +99,56 @@ This track chronicles the beginning of the Osteen investigation—where the firs
 When law enforcement lies under oath to obtain a warrant, they don't just break the law—they break the very foundation of justice itself. This track names names and presents facts.`
     },
     {
+      trackNumber: 8,
+      title: "The Crowder Files",
+      content: `"The Crowder Files" serves as the documentary centerpiece of the album's exposure of Phyllis "Liz" Crowder's role in the coordinated campaign against Don Matthews. This track compiles the receipts—the false statements, the manipulated legal filings, the weaponized agencies, and the trail of destruction left in the wake of personal vendetta transformed into state action.
+
+The song lays out chronologically how Crowder's actions escalated from private disputes to federal-level involvement, implicating multiple agencies and officials along the way. It documents the pattern of behavior: false accusations followed by official responses, manufactured emergencies used to trigger arrests, and a consistent strategy of using government machinery as a tool of personal revenge.
+
+"The Crowder Files" doesn't speculate—it archives. Every claim in the track is rooted in documented evidence, court records, and verifiable events. This is accountability set to music, a permanent record that ensures the truth cannot be buried, altered, or forgotten.`
+    },
+    {
+      trackNumber: 9,
+      title: "Eleven Months Too Long",
+      content: `"Eleven Months Too Long" documents one of the most egregious examples of pretrial detention abuse in the Bad Actors saga. This track chronicles the nearly year-long imprisonment endured without conviction—eleven months of freedom stolen, life suspended, and constitutional rights trampled.
+
+The song examines how the justice system weaponizes delay, using prolonged detention as punishment before any verdict is rendered. It exposes the calculated cruelty of a system that knows pretrial incarceration destroys jobs, relationships, mental health, and reputations—then uses that destruction as leverage.
+
+Every day counted. Every month documented. Eleven months too long is eleven months of proof that the system isn't broken—it's working exactly as designed for those it wants to crush.`
+    },
+    {
+      trackNumber: 10,
+      title: "Caught Red Handed",
+      content: `"Caught Red Handed" is the receipts track—the moment when all the documentation, all the evidence, all the contradictions come together to prove what was always true: they lied, and they got caught.
+
+This track celebrates the vindication that comes when corrupt actors slip up, when their stories contradict each other, when the paper trail reveals the truth they tried to bury. It's the documentation of that moment when the lies become undeniable, when even the cover-up can't cover it up anymore.
+
+"Caught Red Handed" transforms legal victories into musical testimony, proving that persistence in the pursuit of truth eventually pays off. The corrupt may delay justice, but they can't escape it forever.`
+    },
+    {
       trackNumber: 11,
       title: "Osteen Lied",
       content: `Three words. Undeniable truth. Documented proof. Osteen lied. Not once. Not by accident. Not a misunderstanding. A calculated, deliberate, provable lie that destroyed lives and perverted justice.
 
 This track lays out the timeline, the contradictions, the evidence, and the receipts. When someone in power lies, they must be held accountable. This is that accountability, set to music.`
+    },
+    {
+      trackNumber: 12,
+      title: "Land of the Free, Unless Its Me",
+      content: `"Land of the Free, Unless Its Me" confronts the bitter irony at the heart of American justice: the freedoms we celebrate don't apply equally to everyone. This track examines how constitutional protections evaporate when you become a target, how rights become privileges revoked at the discretion of those in power.
+
+The song documents the systematic denial of due process, the selective enforcement of laws, and the two-tiered justice system that protects the powerful while crushing those who challenge them. It's a meditation on what freedom really means when your freedom depends on who you are, who you know, and who you've dared to expose.
+
+Every American should be able to trust that "liberty and justice for all" means exactly that. This track is for everyone who learned the hard way that the promise was never meant for them.`
+    },
+    {
+      trackNumber: 13,
+      title: "She Called The State",
+      content: `"She Called The State" documents the moment when personal conflict became state-sponsored persecution. This track examines how a single phone call can activate an entire apparatus of government power against an individual—transforming a domestic dispute into a coordinated multi-agency assault on freedom.
+
+The song traces the chain of events from that initial call through the escalating responses: police involvement, child protective services, interstate coordination, and eventually federal attention. It exposes how easily the machinery of the state can be weaponized by those who know how to manipulate it.
+
+"She Called The State" serves as a warning and a record. It shows how vulnerable any citizen becomes when someone with malicious intent understands how to pull the right governmental strings. The state became the weapon; the call was just the trigger.`
     },
     {
       trackNumber: 14,
@@ -120,10 +166,19 @@ This track reclaims reality. It documents the gaslighting tactics used by those 
     },
     {
       trackNumber: 16,
-      title: "Governor's Gone Too Far",
+      title: "Governors Gone Too Far",
       content: `When corruption reaches the highest levels of state government, when the governor's office itself becomes complicit in covering up injustice, someone has to say it out loud: The Governor's Gone Too Far.
 
-This closing track pulls no punches. It connects the dots from local corruption to state-level complicity. It names the failures of leadership that allowed bad actors to operate with impunity. This is the call for accountability at every level of government. The reckoning doesn't stop at county lines.`
+This track pulls no punches. It connects the dots from local corruption to state-level complicity. It names the failures of leadership that allowed bad actors to operate with impunity. This is the call for accountability at every level of government. The reckoning doesn't stop at county lines.`
+    },
+    {
+      trackNumber: 17,
+      title: "Scandalous",
+      content: `"Scandalous" is the album's closing statement—a final, unflinching summary of everything that came before. This track takes the full scope of documented corruption, the web of bad actors, the pattern of abuse, and distills it into one undeniable word: scandalous.
+
+The song serves as both conclusion and call to action. It recaps the major players, the key events, and the systemic failures while driving home the central message: this level of corruption isn't an aberration—it's a scandal that demands response, reform, and reckoning.
+
+"Scandalous" doesn't let anyone off the hook. It names the behavior for what it is and ensures that the final note of Bad Actors: Volume 1 is a promise that the documentation continues, the truth persists, and accountability remains the goal. The scandal is exposed. Now it's time for justice.`
     },
   ];
 
@@ -150,12 +205,12 @@ This closing track pulls no punches. It connects the dots from local corruption 
       
       <UpcomingAlbums albums={upcomingAlbums} />
       
-      <footer className="py-16 border-t-2 border-police-red/30 bg-gradient-to-b from-background to-reckoning-dark">
+      <footer className="py-16 border-t-2 border-police-red bg-reckoning-dark">
         <div className="container mx-auto px-4 text-center">
           <p className="text-foreground font-bold text-lg">
             © 2025 Don Matthews - Bad Actors. All rights reserved.
           </p>
-          <p className="text-police-red font-black text-xl mt-3 tracking-wider uppercase">
+          <p className="text-crime-yellow font-black text-xl mt-3 tracking-wider uppercase">
             Truth. Justice. Accountability.
           </p>
         </div>
