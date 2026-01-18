@@ -1,15 +1,21 @@
-import { Music } from "lucide-react";
+import { Music, ExternalLink } from "lucide-react";
+
+interface StreamingLink {
+  platform: string;
+  url: string;
+}
 
 interface AlbumHeroProps {
   title: string;
   artist: string;
   releaseDate: string;
-  embedUrl: string;
+  youtubePlaylistId: string;
+  streamingLinks: StreamingLink[];
 }
 
-const AlbumHero = ({ title, artist, releaseDate, embedUrl }: AlbumHeroProps) => {
+const AlbumHero = ({ title, artist, releaseDate, youtubePlaylistId, streamingLinks }: AlbumHeroProps) => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-reckoning-dark">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
       {/* Crime scene tape pattern */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 right-0 h-1 bg-crime-yellow" />
@@ -18,22 +24,18 @@ const AlbumHero = ({ title, artist, releaseDate, embedUrl }: AlbumHeroProps) => 
         <div className="absolute bottom-8 left-0 right-0 h-0.5 bg-police-red opacity-60" />
       </div>
       
-      {/* Harsh spotlight effects */}
-      <div className="absolute top-0 left-1/4 w-[400px] h-[600px] bg-police-red/20 blur-[100px]" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[600px] bg-police-red/15 blur-[100px]" />
-      
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 relative z-10 py-20">
         <div className="max-w-5xl mx-auto">
           {/* Accountability symbol */}
           <div className="flex justify-center mb-8 animate-fade-in">
-            <div className="p-5 rounded-sm bg-black/80 border-2 border-police-red shadow-[0_0_30px_rgba(255,0,0,0.5)]">
+            <div className="p-5 rounded-sm bg-black border-2 border-police-red shadow-[0_0_30px_hsl(var(--police-red)/0.5)]">
               <Music className="w-14 h-14 text-police-red" strokeWidth={2.5} />
             </div>
           </div>
 
           {/* Title - Bold and confrontational */}
           <h1 className="text-6xl md:text-8xl font-black text-center mb-6 animate-fade-in tracking-tight" style={{ animationDelay: "0.1s" }}>
-            <span className="bg-gradient-to-r from-police-red via-warning-red to-justice-blue bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(255,0,0,0.5)]">
+            <span className="text-police-red drop-shadow-[0_0_20px_hsl(var(--police-red)/0.5)]">
               {title}
             </span>
           </h1>
@@ -46,25 +48,51 @@ const AlbumHero = ({ title, artist, releaseDate, embedUrl }: AlbumHeroProps) => 
           </div>
           
           {/* Artist & Release */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-14 text-muted-foreground animate-fade-in" style={{ animationDelay: "0.2s" }}>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10 text-muted-foreground animate-fade-in" style={{ animationDelay: "0.2s" }}>
             <span className="text-2xl font-semibold text-foreground">{artist}</span>
             <span className="hidden md:inline text-police-red">|</span>
             <span className="text-xl font-medium">{releaseDate}</span>
           </div>
 
-          {/* Embedded Player - Single authoritative source */}
+          {/* Streaming Links */}
+          <div className="flex flex-wrap justify-center gap-4 mb-12 animate-fade-in" style={{ animationDelay: "0.25s" }}>
+            {streamingLinks.map((link) => (
+              <a
+                key={link.platform}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-6 py-3 bg-black border-2 border-police-red text-foreground font-bold uppercase tracking-wide hover:bg-police-red hover:text-white transition-all duration-300"
+              >
+                {link.platform}
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            ))}
+          </div>
+
+          {/* YouTube Player */}
           <div className="relative animate-fade-in" style={{ animationDelay: "0.3s" }}>
-            <div className="absolute -inset-4 bg-gradient-to-r from-police-red/40 via-blood-red/40 to-justice-blue/40 rounded-xl blur-2xl" />
-            <div className="relative bg-black/90 backdrop-blur-sm rounded-xl border-2 border-police-red/50 overflow-hidden shadow-[0_0_50px_rgba(255,0,0,0.3)]">
+            <div className="relative bg-black border-2 border-police-red overflow-hidden shadow-[0_0_50px_hsl(var(--police-red)/0.3)]">
               <iframe 
                 width="100%" 
                 height="450" 
-                src={embedUrl}
-                allow="autoplay"
+                src={`https://www.youtube.com/embed/videoseries?list=${youtubePlaylistId}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
                 className="w-full"
-                title="Bad Actors Album Player"
+                title="Bad Actors Album - YouTube Playlist"
               />
             </div>
+          </div>
+
+          {/* Available Everywhere Notice */}
+          <div className="mt-10 text-center animate-fade-in" style={{ animationDelay: "0.4s" }}>
+            <p className="text-crime-yellow font-bold text-lg uppercase tracking-widest mb-2">
+              Available Now On All Major Platforms
+            </p>
+            <p className="text-muted-foreground">
+              Spotify • Apple Music • YouTube Music • Amazon Music • Tidal • Deezer • and more
+            </p>
           </div>
         </div>
       </div>
@@ -73,4 +101,3 @@ const AlbumHero = ({ title, artist, releaseDate, embedUrl }: AlbumHeroProps) => 
 };
 
 export default AlbumHero;
-

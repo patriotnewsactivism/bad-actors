@@ -174,11 +174,11 @@ This track pulls no punches. It connects the dots from local corruption to state
     {
       trackNumber: 17,
       title: "Scandalous",
-      content: `"Scandalous" is the album's closing statement—a final, unflinching summary of everything that came before. This track takes the full scope of documented corruption, the web of bad actors, the pattern of abuse, and distills it into one undeniable word: scandalous.
+      content: `"Scandalous" closes the album with the most personal betrayal of all—the scandalous acts committed by the woman I married and had three children with. This track documents the calculated destruction that came from within my own home.
 
-The song serves as both conclusion and call to action. It recaps the major players, the key events, and the systemic failures while driving home the central message: this level of corruption isn't an aberration—it's a scandal that demands response, reform, and reckoning.
+This isn't about a failed marriage. It's about weaponized lies, false accusations, and the systematic demolition of a father's relationship with his children. It's about watching someone you trusted become the architect of your persecution—filing false reports, manipulating agencies, and using the children as pawns in a campaign of destruction.
 
-"Scandalous" doesn't let anyone off the hook. It names the behavior for what it is and ensures that the final note of Bad Actors: Volume 1 is a promise that the documentation continues, the truth persists, and accountability remains the goal. The scandal is exposed. Now it's time for justice.`
+"Scandalous" names the behavior for what it is: a betrayal so complete, so calculated, and so devastating that it became the foundation for everything else that followed. The corruption of government actors was built on the lies that started at home. This is the truth that could no longer stay silent.`
     },
   ];
 
@@ -196,7 +196,13 @@ The song serves as both conclusion and call to action. It recaps the major playe
         title="Bad Actors - The Album"
         artist="Don Matthews"
         releaseDate="Released September 1, 2025"
-        embedUrl="https://www.bandlab.com/embed/collection/?id=8ea7105d-acc1-f011-8195-6045bd30a4b0"
+        youtubePlaylistId="OLAK5uy_lQdVnTChfibpXLzkkT_BcrpjPxxqcx5fs"
+        streamingLinks={[
+          { platform: "Apple Music", url: "https://music.apple.com/au/album/bad-actors-volume-1/1863402949" },
+          { platform: "Spotify", url: "https://open.spotify.com/album/bad-actors-volume-1" },
+          { platform: "YouTube Music", url: "https://music.youtube.com/playlist?list=OLAK5uy_lQdVnTChfibpXLzkkT_BcrpjPxxqcx5fs" },
+          { platform: "DistroKid", url: "https://distrokid.com/hyperfollow/donmatthews/bad-actors-volume-1" },
+        ]}
       />
       
       <TrackList tracks={tracks} stories={stories} />
@@ -205,7 +211,7 @@ The song serves as both conclusion and call to action. It recaps the major playe
       
       <UpcomingAlbums albums={upcomingAlbums} />
       
-      <footer className="py-16 border-t-2 border-police-red bg-reckoning-dark">
+      <footer className="py-16 border-t-2 border-police-red bg-black">
         <div className="container mx-auto px-4 text-center">
           <p className="text-foreground font-bold text-lg">
             © 2025 Don Matthews - Bad Actors. All rights reserved.
