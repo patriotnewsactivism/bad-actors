@@ -1,4 +1,5 @@
 import { Music, ExternalLink } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface StreamingLink {
   platform: string;
@@ -15,6 +16,13 @@ interface AlbumHeroProps {
 }
 
 const AlbumHero = ({ title, artist, releaseDate, youtubePlaylistId, currentTrack, streamingLinks }: AlbumHeroProps) => {
+  const [playerUrl, setPlayerUrl] = useState<string>("");
+
+  useEffect(() => {
+    // Build the YouTube URL with the current track
+    const url = `https://www.youtube.com/embed/videoseries?list=${youtubePlaylistId}&index=${currentTrack}&autoplay=1`;
+    setPlayerUrl(url);
+  }, [currentTrack, youtubePlaylistId]);
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
       {/* Crime scene tape pattern */}
@@ -74,16 +82,18 @@ const AlbumHero = ({ title, artist, releaseDate, youtubePlaylistId, currentTrack
           {/* YouTube Player */}
           <div className="relative animate-fade-in" style={{ animationDelay: "0.3s" }}>
             <div className="relative bg-black border-2 border-police-red overflow-hidden shadow-[0_0_50px_hsl(var(--police-red)/0.3)]">
-              <iframe
-                key={`track-${currentTrack}`}
-                width="100%"
-                height="450"
-                src={`https://www.youtube.com/embed/videoseries?list=${youtubePlaylistId}&index=${currentTrack}&autoplay=1`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full"
-                title="Bad Actors Album - YouTube Playlist"
-              />
+              {playerUrl && (
+                <iframe
+                  key={currentTrack}
+                  width="100%"
+                  height="450"
+                  src={playerUrl}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="w-full"
+                  title="Bad Actors Album - YouTube Playlist"
+                />
+              )}
             </div>
           </div>
 
