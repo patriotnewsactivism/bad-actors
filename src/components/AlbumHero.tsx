@@ -78,7 +78,7 @@ const AlbumHero = ({ title, artist, releaseDate, youtubePlaylistId, currentTrack
                 key={`track-${currentTrack}`}
                 width="100%"
                 height="450"
-                src={`https://www.youtube.com/embed/videoseries?list=${youtubePlaylistId}&index=${currentTrack}&autoplay=1`}
+                src={`https://www.youtube.com/embed/videoseries?list=${youtubePlaylistId}&index=${currentTrack - 1}&autoplay=1`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="w-full"
