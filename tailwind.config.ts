@@ -51,6 +51,9 @@ export default {
         "crime-yellow": "hsl(var(--crime-yellow))",
         "reckoning-dark": "hsl(var(--reckoning-dark))",
         "blood-red": "hsl(var(--blood-red))",
+        "warning-red": "hsl(var(--warning-red))",
+        "justice-blue": "hsl(var(--justice-blue))",
+        "steel-blue": "hsl(var(--steel-blue))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
