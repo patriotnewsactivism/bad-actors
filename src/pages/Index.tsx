@@ -3,28 +3,35 @@ import AlbumHero from "@/components/AlbumHero";
 import TrackList from "@/components/TrackList";
 import StoriesSection from "@/components/StoriesSection";
 import UpcomingAlbums from "@/components/UpcomingAlbums";
+import EmailCapture from "@/components/EmailCapture";
 
 const Index = () => {
   const [currentTrack, setCurrentTrack] = useState<number>(1);
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const tracks = [
-    { number: 1, title: "Silence Ain't Consent", duration: "3:33" },
-    { number: 2, title: "Unbroken", duration: "5:04" },
-    { number: 3, title: "In the Shadows Tonight", duration: "4:19" },
-    { number: 4, title: "Double Dipped", duration: "4:17" },
-    { number: 5, title: "Morgan County Blues", duration: "4:04" },
-    { number: 6, title: "The Osteen Files (Exhibit L)", duration: "3:50" },
-    { number: 7, title: "A Warrant For A Lie", duration: "3:34" },
-    { number: 8, title: "The Crowder Files", duration: "3:33" },
-    { number: 9, title: "Eleven Months Too Long", duration: "3:48" },
-    { number: 10, title: "Caught Red Handed", duration: "4:00" },
-    { number: 11, title: "Osteen Lied", duration: "3:36" },
-    { number: 12, title: "Land of the Free, Unless Its Me", duration: "4:12" },
-    { number: 13, title: "She Called The State", duration: "3:55" },
-    { number: 14, title: "Osteen's Fall", duration: "3:27" },
-    { number: 15, title: "The Gaslight Anthem", duration: "2:29" },
-    { number: 16, title: "Governors Gone Too Far", duration: "3:22" },
-    { number: 17, title: "Scandalous", duration: "3:14" },
+    { number: 1, title: "Silence Ain't Consent", duration: "3:33", youtubeId: "dQw4w9WgXcQ" },
+    { number: 2, title: "Unbroken", duration: "5:04", youtubeId: "dQw4w9WgXcQ" },
+    { number: 3, title: "In the Shadows Tonight", duration: "4:19", youtubeId: "dQw4w9WgXcQ" },
+    { number: 4, title: "Double Dipped", duration: "4:17", youtubeId: "dQw4w9WgXcQ" },
+    { number: 5, title: "Morgan County Blues", duration: "4:04", youtubeId: "dQw4w9WgXcQ" },
+    { number: 6, title: "The Osteen Files (Exhibit L)", duration: "3:50", youtubeId: "dQw4w9WgXcQ" },
+    { number: 7, title: "A Warrant For A Lie", duration: "3:34", youtubeId: "dQw4w9WgXcQ" },
+    { number: 8, title: "The Crowder Files", duration: "3:33", youtubeId: "dQw4w9WgXcQ" },
+    { number: 9, title: "Eleven Months Too Long", duration: "3:48", youtubeId: "dQw4w9WgXcQ" },
+    { number: 10, title: "Caught Red Handed", duration: "4:00", youtubeId: "dQw4w9WgXcQ" },
+    { number: 11, title: "Osteen Lied", duration: "3:36", youtubeId: "dQw4w9WgXcQ" },
+    { number: 12, title: "Land of the Free, Unless Its Me", duration: "4:12", youtubeId: "dQw4w9WgXcQ" },
+    { number: 13, title: "She Called The State", duration: "3:55", youtubeId: "dQw4w9WgXcQ" },
+    { number: 14, title: "Osteen's Fall", duration: "3:27", youtubeId: "dQw4w9WgXcQ" },
+    { number: 15, title: "The Gaslight Anthem", duration: "2:29", youtubeId: "dQw4w9WgXcQ" },
+    { number: 16, title: "Governors Gone Too Far", duration: "3:22", youtubeId: "dQw4w9WgXcQ" },
+    { number: 17, title: "Scandalous", duration: "3:14", youtubeId: "dQw4w9WgXcQ" },
   ];
+
+  const handleEmailSubmit = async (email: string, name?: string) => {
+    console.log("Email submitted:", email, name);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  };
 
   const stories = [
     {
@@ -200,12 +207,14 @@ This isn't about a failed marriage. It's about weaponized lies, false accusation
         releaseDate="Released September 1, 2025"
         youtubePlaylistId="OLAK5uy_lQdVnTChfibpXLzkkT_BcrpjPxxqcx5fs"
         currentTrack={currentTrack}
+        tracks={tracks}
         streamingLinks={[
           { platform: "Apple Music", url: "https://music.apple.com/au/album/bad-actors-volume-1/1863402949" },
           { platform: "Spotify", url: "https://open.spotify.com/album/bad-actors-volume-1" },
           { platform: "YouTube Music", url: "https://music.youtube.com/playlist?list=OLAK5uy_lQdVnTChfibpXLzkkT_BcrpjPxxqcx5fs" },
           { platform: "DistroKid", url: "https://distrokid.com/hyperfollow/donmatthews/bad-actors-volume-1" },
         ]}
+        onDownloadClick={() => setIsDownloadModalOpen(true)}
       />
 
       <TrackList
@@ -218,6 +227,13 @@ This isn't about a failed marriage. It's about weaponized lies, false accusation
       <StoriesSection stories={stories} />
       
       <UpcomingAlbums albums={upcomingAlbums} />
+
+      <EmailCapture
+        isOpen={isDownloadModalOpen}
+        onClose={() => setIsDownloadModalOpen(false)}
+        onSubmit={handleEmailSubmit}
+        downloadUrl="https://distrokid.com/hyperfollow/donmatthews/bad-actors-volume-1"
+      />
       
       <footer className="py-16 border-t-2 border-police-red bg-black">
         <div className="container mx-auto px-4 text-center">
