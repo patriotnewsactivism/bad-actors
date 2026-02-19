@@ -76,16 +76,22 @@ const AlbumHero = ({
     if (currentTrackData?.youtubeId) {
       return `https://www.youtube.com/embed/${currentTrackData.youtubeId}?autoplay=1&rel=0`;
     }
+    if (youtubePlaylistId?.startsWith('OLAK5uy_')) {
+      return `https://music.youtube.com/embed/playlist?list=${youtubePlaylistId}`;
+    }
     if (youtubePlaylistId) {
       return `https://www.youtube.com/embed/videoseries?list=${youtubePlaylistId}&index=${currentTrack - 1}&autoplay=1`;
     }
     return null;
   };
 
+  const isYouTubeMusicAlbum = youtubePlaylistId?.startsWith('OLAK5uy_');
   const embedUrl = getYouTubeEmbedUrl();
   const embedKey = currentTrackData?.youtubeId
     ? `video-${currentTrackData.youtubeId}`
-    : `playlist-${currentTrack}`;
+    : isYouTubeMusicAlbum
+      ? `yt-music-${youtubePlaylistId}`
+      : `playlist-${currentTrack}`;
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-black">
@@ -231,19 +237,26 @@ const AlbumHero = ({
                   )}
                 </div>
 
-                <div className="mt-4 flex items-center justify-between p-3 bg-black border-2 border-crime-yellow/50">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-crime-yellow animate-pulse" />
-                    <span className="text-crime-yellow font-bold text-sm uppercase tracking-wide">
-                      {tracks.length} Tracks
-                    </span>
+                <div className="mt-4 p-3 bg-black border-2 border-crime-yellow/50">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-crime-yellow animate-pulse" />
+                      <span className="text-crime-yellow font-bold text-sm uppercase tracking-wide">
+                        {tracks.length} Tracks
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Music className="w-4 h-4 text-police-red" />
+                      <span className="text-muted-foreground text-sm uppercase tracking-wide">
+                        Select track below
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Music className="w-4 h-4 text-police-red" />
-                    <span className="text-muted-foreground text-sm uppercase tracking-wide">
-                      Select track below
-                    </span>
-                  </div>
+                  {isYouTubeMusicAlbum && (
+                    <p className="text-muted-foreground text-xs text-center">
+                      Click tracks in the player to switch songs
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
