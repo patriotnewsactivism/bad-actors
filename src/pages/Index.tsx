@@ -1,13 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AlbumHero from "@/components/AlbumHero";
 import TrackList from "@/components/TrackList";
 import StoriesSection from "@/components/StoriesSection";
 import UpcomingAlbums from "@/components/UpcomingAlbums";
 import EmailCapture from "@/components/EmailCapture";
+import { emailService } from "@/lib/emailService";
 
 const Index = () => {
   const [currentTrack, setCurrentTrack] = useState<number>(1);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+
+  useEffect(() => {
+    emailService.init();
+  }, []);
+
   const tracks = [
     { number: 1, title: "Silence Ain't Consent", duration: "3:33", youtubeId: "dQw4w9WgXcQ" },
     { number: 2, title: "Unbroken", duration: "5:04", youtubeId: "dQw4w9WgXcQ" },
@@ -29,8 +35,15 @@ const Index = () => {
   ];
 
   const handleEmailSubmit = async (email: string, name?: string) => {
-    console.log("Email submitted:", email, name);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const downloadUrl = import.meta.env.VITE_DOWNLOAD_URL || "https://distrokid.com/hyperfollow/donmatthews/bad-actors-volume-1";
+    await emailService.sendDownloadEmail(email, name, downloadUrl);
+    
+    const storedEmails = localStorage.getItem("captured_emails");
+    const emails = storedEmails ? JSON.parse(storedEmails) : [];
+    if (!emails.includes(email)) {
+      emails.push(email);
+      localStorage.setItem("captured_emails", JSON.stringify(emails));
+    }
   };
 
   const stories = [
