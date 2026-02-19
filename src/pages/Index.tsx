@@ -245,7 +245,7 @@ This isn't about a failed marriage. It's about weaponized lies, false accusation
         isOpen={isDownloadModalOpen}
         onClose={() => setIsDownloadModalOpen(false)}
         onSubmit={handleEmailSubmit}
-        downloadUrl="https://distrokid.com/hyperfollow/donmatthews/bad-actors-volume-1"
+        downloadUrl={import.meta.env.VITE_DOWNLOAD_URL || "https://distrokid.com/hyperfollow/donmatthews/bad-actors-volume-1"}
       />
       
       <footer className="py-16 border-t-2 border-police-red bg-black">
