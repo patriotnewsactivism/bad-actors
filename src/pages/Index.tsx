@@ -220,7 +220,7 @@ This track chronicles the beginning of the Osteen investigation—where the firs
               onTrackSelect={setCurrentTrack}
             />
             
-            <StoriesSection stories={stories} />
+            <StoriesSection stories={stories} onTrackSelect={setCurrentTrack} />
           </div>
           
           <div className="space-y-12">

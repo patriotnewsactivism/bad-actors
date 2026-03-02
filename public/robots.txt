@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://badactors.fm/sitemap.xml
+Sitemap: https://badactors.online/sitemap.xml
