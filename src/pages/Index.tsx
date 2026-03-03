@@ -21,29 +21,29 @@ const Index = () => {
   }, []);
 
   const tracks = [
-    { number: 1, title: "Silence Ain't Consent", duration: "3:33", youtubeId: "VIDEO_ID_1" },
-    { number: 2, title: "Unbroken", duration: "5:04", youtubeId: "VIDEO_ID_2" },
-    { number: 3, title: "In the Shadows Tonight", duration: "4:19", youtubeId: "VIDEO_ID_3" },
-    { number: 4, title: "Double Dipped", duration: "4:17", youtubeId: "VIDEO_ID_4" },
-    { number: 5, title: "Morgan County Blues", duration: "4:04", youtubeId: "VIDEO_ID_5" },
-    { number: 6, title: "The Osteen Files (Exhibit L)", duration: "3:50", youtubeId: "VIDEO_ID_6" },
-    { number: 7, title: "A Warrant For A Lie", duration: "3:34", youtubeId: "VIDEO_ID_7" },
-    { number: 8, title: "The Crowder Files", duration: "3:33", youtubeId: "VIDEO_ID_8" },
-    { number: 9, title: "Eleven Months Too Long", duration: "3:48", youtubeId: "VIDEO_ID_9" },
-    { number: 10, title: "Caught Red Handed", duration: "4:00", youtubeId: "VIDEO_ID_10" },
-    { number: 11, title: "Osteen Lied", duration: "3:36", youtubeId: "VIDEO_ID_11" },
-    { number: 12, title: "Land of the Free, Unless Its Me", duration: "4:12", youtubeId: "VIDEO_ID_12" },
-    { number: 13, title: "She Called The State", duration: "3:55", youtubeId: "VIDEO_ID_13" },
-    { number: 14, title: "Osteen's Fall", duration: "3:27", youtubeId: "VIDEO_ID_14" },
-    { number: 15, title: "The Gaslight Anthem", duration: "2:29", youtubeId: "VIDEO_ID_15" },
-    { number: 16, title: "Governors Gone Too Far", duration: "3:22", youtubeId: "VIDEO_ID_16" },
-    { number: 17, title: "Scandalous", duration: "3:14", youtubeId: "VIDEO_ID_17" },
+    { number: 1, title: "Silence Ain't Consent", duration: "3:33" },
+    { number: 2, title: "Unbroken", duration: "5:04" },
+    { number: 3, title: "In the Shadows Tonight", duration: "4:19" },
+    { number: 4, title: "Double Dipped", duration: "4:17" },
+    { number: 5, title: "Morgan County Blues", duration: "4:04" },
+    { number: 6, title: "The Osteen Files (Exhibit L)", duration: "3:50" },
+    { number: 7, title: "A Warrant For A Lie", duration: "3:34" },
+    { number: 8, title: "The Crowder Files", duration: "3:33" },
+    { number: 9, title: "Eleven Months Too Long", duration: "3:48" },
+    { number: 10, title: "Caught Red Handed", duration: "4:00" },
+    { number: 11, title: "Osteen Lied", duration: "3:36" },
+    { number: 12, title: "Land of the Free, Unless Its Me", duration: "4:12" },
+    { number: 13, title: "She Called The State", duration: "3:55" },
+    { number: 14, title: "Osteen's Fall", duration: "3:27" },
+    { number: 15, title: "The Gaslight Anthem", duration: "2:29" },
+    { number: 16, title: "Governors Gone Too Far", duration: "3:22" },
+    { number: 17, title: "Scandalous", duration: "3:14" },
   ];
 
   const streamingLinks = [
     { platform: "Apple Music", url: "https://music.apple.com/au/album/bad-actors-volume-1/1863402949" },
     { platform: "Spotify", url: "https://open.spotify.com/album/bad-actors-volume-1" },
-    { platform: "YouTube Music", url: "https://music.youtube.com/playlist?list=OLAK5uy_lQdVnTChfibpXLzkkT_BcrpjPxxqcx5fs" },
+    { platform: "YouTube Music", url: "https://music.youtube.com/playlist?list=OLAK5uy_m5AmZDrY2kX__kNhYE1jkhmY1LLTZi1cE&si=dyuOTX4AcfYaUuo0" },
     { platform: "Amazon Music", url: "https://music.amazon.com/albums/B0DFV8Y7X5" },
     { platform: "Tidal", url: "https://tidal.com/browse/album/384265741" },
     { platform: "Deezer", url: "https://www.deezer.com/album/636845241" },
@@ -203,7 +203,7 @@ This track chronicles the beginning of the Osteen investigation—where the firs
         title="Bad Actors - Volume 1"
         artist="Don Matthews"
         releaseDate="September 1, 2025"
-        youtubePlaylistId="OLAK5uy_lQdVnTChfibpXLzkkT_BcrpjPxxqcx5fs"
+        youtubePlaylistId="OLAK5uy_m5AmZDrY2kX__kNhYE1jkhmY1LLTZi1cE"
         currentTrack={currentTrack}
         tracks={tracks}
         streamingLinks={streamingLinks}
