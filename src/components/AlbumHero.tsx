@@ -63,8 +63,9 @@ const AlbumHero = ({
   streamingLinks,
   onDownloadClick,
 }: AlbumHeroProps) => {
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [embedError, setEmbedError] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -72,15 +73,33 @@ const AlbumHero = ({
 
   const currentTrackData = tracks.find((t) => t.number === currentTrack);
 
+  // Pause logic: update embed URL to include autoplay=0
+  useEffect(() => {
+    if (!isPlaying) {
+      // We can't directly pause YouTube iframe, but we can reload it with autoplay=0
+      // This will stop playback
+    }
+  }, [isPlaying]);
+
+  // Reset error state when track changes
+  useEffect(() => {
+    setEmbedError(false);
+  }, [currentTrack]);
+
+  const handleEmbedError = () => {
+    console.error('YouTube embed failed to load');
+    setEmbedError(true);
+  };
+
   const getYouTubeEmbedUrl = () => {
     if (currentTrackData?.youtubeId) {
-      return `https://www.youtube.com/embed/${currentTrackData.youtubeId}?autoplay=1&rel=0`;
+      return `https://www.youtube.com/embed/${currentTrackData.youtubeId}?autoplay=${isPlaying ? 1 : 0}&rel=0`;
     }
     if (youtubePlaylistId?.startsWith('OLAK5uy_')) {
-      return `https://music.youtube.com/embed/playlist?list=${youtubePlaylistId}`;
+      return `https://www.youtube.com/embed/videoseries?list=${youtubePlaylistId}&index=${currentTrack - 1}&autoplay=${isPlaying ? 1 : 0}`;
     }
     if (youtubePlaylistId) {
-      return `https://www.youtube.com/embed/videoseries?list=${youtubePlaylistId}&index=${currentTrack - 1}&autoplay=1`;
+      return `https://www.youtube.com/embed/videoseries?list=${youtubePlaylistId}&index=${currentTrack - 1}&autoplay=${isPlaying ? 1 : 0}`;
     }
     return null;
   };
