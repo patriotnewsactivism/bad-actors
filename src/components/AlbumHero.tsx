@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Music, ExternalLink, Download, Play, Pause, Disc3 } from "lucide-react";
+import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube";
 
 interface StreamingLink {
   platform: string;
@@ -36,7 +37,7 @@ const AlbumHero = ({
 }: AlbumHeroProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [embedError, setEmbedError] = useState(false);
+  const playerRef = useRef<YouTubePlayer | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -44,44 +45,58 @@ const AlbumHero = ({
 
   const currentTrackData = tracks.find((t) => t.number === currentTrack);
 
-  // Pause logic: update embed URL to include autoplay=0
+  // Sync play/pause state with player
   useEffect(() => {
-    if (!isPlaying) {
-      // We can't directly pause YouTube iframe, but we can reload it with autoplay=0
-      // This will stop playback
+    if (playerRef.current) {
+      if (isPlaying) {
+        playerRef.current.playVideo();
+      } else {
+        playerRef.current.pauseVideo();
+      }
     }
   }, [isPlaying]);
 
-  // Reset error state when track changes
+  // Handle track changes
   useEffect(() => {
-    setEmbedError(false);
-  }, [currentTrack]);
+    if (playerRef.current) {
+      if (currentTrackData?.youtubeId) {
+        playerRef.current.loadVideoById(currentTrackData.youtubeId);
+      } else if (youtubePlaylistId) {
+        // If we are in playlist mode, we might need to ensure the playlist is loaded
+        // But for now, assuming the player was initialized with the playlist
+        // We can just skip to the index
+        playerRef.current.playVideoAt(currentTrack - 1);
+      }
+    }
+  }, [currentTrack, currentTrackData, youtubePlaylistId]);
 
-  const handleEmbedError = () => {
-    console.error('YouTube embed failed to load');
-    setEmbedError(true);
+  const onPlayerReady = (event: YouTubeEvent) => {
+    playerRef.current = event.target;
+    // Set initial volume if needed, or handle autoplay policy
+    // Note: Mobile browsers and some desktop policies might block unmuted autoplay
   };
 
-  const getYouTubeEmbedUrl = () => {
-    if (currentTrackData?.youtubeId) {
-      return `https://www.youtube.com/embed/${currentTrackData.youtubeId}?autoplay=${isPlaying ? 1 : 0}&rel=0`;
+  const onPlayerStateChange = (event: YouTubeEvent) => {
+    // 1 = playing, 2 = paused
+    if (event.data === 1) {
+      setIsPlaying(true);
+    } else if (event.data === 2) {
+      setIsPlaying(false);
     }
-    if (youtubePlaylistId?.startsWith('OLAK5uy_')) {
-      return `https://www.youtube.com/embed/videoseries?list=${youtubePlaylistId}&index=${currentTrack - 1}&autoplay=${isPlaying ? 1 : 0}`;
-    }
-    if (youtubePlaylistId) {
-      return `https://www.youtube.com/embed/videoseries?list=${youtubePlaylistId}&index=${currentTrack - 1}&autoplay=${isPlaying ? 1 : 0}`;
-    }
-    return null;
   };
 
-  const isYouTubeMusicAlbum = youtubePlaylistId?.startsWith('OLAK5uy_');
-  const embedUrl = getYouTubeEmbedUrl();
-  const embedKey = currentTrackData?.youtubeId
-    ? `video-${currentTrackData.youtubeId}-${isPlaying}`
-    : isYouTubeMusicAlbum
-      ? `yt-music-${youtubePlaylistId}-${isPlaying}`
-      : `playlist-${currentTrack}-${isPlaying}`;
+  const opts = {
+    height: '400',
+    width: '100%',
+    playerVars: {
+      autoplay: 0,
+      listType: youtubePlaylistId ? 'playlist' : undefined,
+      list: youtubePlaylistId,
+      index: currentTrack - 1,
+      modestbranding: 1,
+      rel: 0,
+    },
+  };
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-black">
@@ -164,7 +179,7 @@ const AlbumHero = ({
                   <Download className="w-5 h-5" />
                   Free Download
                 </button>
-                {streamingLinks.slice(0, 2).map((link) => (
+                {streamingLinks.map((link) => (
                   <a
                     key={link.platform}
                     href={link.url}
@@ -182,16 +197,14 @@ const AlbumHero = ({
             <div className={`${mounted ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
               <div className="relative">
                 <div className="relative bg-black border border-police-red/50 overflow-hidden shadow-[0_0_30px_hsl(var(--police-red)/0.2)]">
-                  {embedUrl ? (
-                    <iframe
-                      key={embedKey}
-                      width="100%"
-                      height="400"
-                      src={embedUrl}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
+                  {youtubePlaylistId || currentTrackData?.youtubeId ? (
+                    <YouTube
+                      videoId={currentTrackData?.youtubeId}
+                      opts={opts}
+                      onReady={onPlayerReady}
+                      onStateChange={onPlayerStateChange}
                       className="w-full"
-                      title={`${title} - Track ${currentTrack}`}
+                      iframeClassName="w-full h-[400px]"
                     />
                   ) : (
                     <div className="w-full h-[400px] flex items-center justify-center bg-black border border-police-red/50">
@@ -220,7 +233,7 @@ const AlbumHero = ({
                       </span>
                     </div>
                   </div>
-                  {isYouTubeMusicAlbum && (
+                  {(youtubePlaylistId && !currentTrackData?.youtubeId) && (
                     <p className="text-muted-foreground text-xs text-center">
                       Click tracks in the player to switch songs
                     </p>
