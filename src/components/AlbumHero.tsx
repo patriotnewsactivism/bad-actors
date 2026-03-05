@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Music, ExternalLink, Download, Play, Pause, Disc3 } from "lucide-react";
 import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube";
 
@@ -85,18 +85,17 @@ const AlbumHero = ({
     }
   };
 
-  const opts = {
+  const opts = useMemo(() => ({
     height: '400',
     width: '100%',
     playerVars: {
       autoplay: 0,
       listType: youtubePlaylistId ? 'playlist' : undefined,
       list: youtubePlaylistId,
-      index: currentTrack - 1,
       modestbranding: 1,
       rel: 0,
     },
-  };
+  }), [youtubePlaylistId]);
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-black">
