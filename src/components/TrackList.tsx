@@ -97,7 +97,7 @@ const TrackList = ({ tracks, stories, currentTrack, onTrackSelect }: TrackListPr
   const remainingStories = totalTracks - storiesCount;
 
   return (
-    <section className="py-24 relative bg-black overflow-hidden">
+    <section className="py-16 md:py-24 relative bg-black overflow-hidden">
       <style>{`
         @keyframes bar1 {
           0%, 100% { height: 4px; }
@@ -144,13 +144,13 @@ const TrackList = ({ tracks, stories, currentTrack, onTrackSelect }: TrackListPr
       <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-police-red/20 to-transparent" />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <Zap className="w-12 h-12 text-police-red" fill="currentColor" />
-            <h2 className="text-5xl md:text-6xl font-black tracking-tight text-police-red">
+        <div className="text-center mb-10 md:mb-12">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-6">
+            <Zap className="w-8 h-8 sm:w-12 sm:h-12 text-police-red" fill="currentColor" />
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-police-red">
               EVIDENCE LOG
             </h2>
-            <Zap className="w-12 h-12 text-police-red" fill="currentColor" />
+            <Zap className="w-8 h-8 sm:w-12 sm:h-12 text-police-red" fill="currentColor" />
           </div>
           <div className="flex items-center justify-center gap-2 mb-4">
             <FileText className="w-5 h-5 text-crime-yellow" />
@@ -158,7 +158,7 @@ const TrackList = ({ tracks, stories, currentTrack, onTrackSelect }: TrackListPr
               Case File #BA-2024 · Track Documentation
             </p>
           </div>
-          <p className="text-muted-foreground text-xl max-w-3xl mx-auto mb-8">
+          <p className="text-muted-foreground text-base sm:text-xl max-w-3xl mx-auto mb-6 md:mb-8 leading-relaxed">
             <span className="text-police-red font-bold">Click any track to play it</span> in the player above. Tracks with the <BookOpen className="w-5 h-5 inline mx-1 text-police-red" /> icon have detailed stories below.
           </p>
 
@@ -180,7 +180,7 @@ const TrackList = ({ tracks, stories, currentTrack, onTrackSelect }: TrackListPr
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-3 flex-wrap">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
             <Filter className="w-5 h-5 text-police-red" />
             <button
               onClick={() => setFilter("all")}
@@ -216,7 +216,7 @@ const TrackList = ({ tracks, stories, currentTrack, onTrackSelect }: TrackListPr
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto px-0 sm:px-2">
           <div className="bg-black border-2 border-police-red overflow-hidden relative">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-crime-yellow/50 to-transparent" />
 
@@ -230,7 +230,7 @@ const TrackList = ({ tracks, stories, currentTrack, onTrackSelect }: TrackListPr
                   id={`track-${track.number}`}
                   key={track.number}
                   onClick={() => handleTrackClick(track.number)}
-                  className={`flex items-center gap-4 p-4 border-b border-border/50 last:border-b-0 transition-all duration-300 group relative cursor-pointer ${
+                  className={`flex items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 border-b border-border/50 last:border-b-0 transition-all duration-300 group relative cursor-pointer ${
                     isCurrentTrack
                       ? 'bg-police-red/15 border-l-4 border-l-police-red'
                       : 'hover:bg-police-red/5 border-l-4 border-l-transparent hover:border-l-crime-yellow'
@@ -248,8 +248,8 @@ const TrackList = ({ tracks, stories, currentTrack, onTrackSelect }: TrackListPr
                   <EvidenceMarker number={track.number} isActive={isCurrentTrack} />
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3">
-                      <h3 className={`font-bold text-lg truncate transition-all duration-300 ${
+                    <div className="flex items-start sm:items-center gap-2 sm:gap-3">
+                      <h3 className={`font-bold text-base sm:text-lg leading-tight sm:truncate transition-all duration-300 ${
                         isCurrentTrack
                           ? 'text-police-red drop-shadow-[0_0_10px_rgba(220,38,38,0.5)]'
                           : 'text-foreground group-hover:text-police-red'
@@ -259,7 +259,7 @@ const TrackList = ({ tracks, stories, currentTrack, onTrackSelect }: TrackListPr
                       {hasStory && (
                         <button
                           onClick={(e) => scrollToStory(track.number, e)}
-                          className="flex-shrink-0 hover:scale-125 transition-transform duration-200"
+                          className="flex-shrink-0 hover:scale-125 transition-transform duration-200 mt-0.5 sm:mt-0"
                           title="Read track story"
                         >
                           <BookOpen className="w-5 h-5 text-police-red" />
@@ -281,8 +281,8 @@ const TrackList = ({ tracks, stories, currentTrack, onTrackSelect }: TrackListPr
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4">
-                    <span className={`text-base font-mono font-semibold transition-colors duration-300 ${
+                  <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4">
+                    <span className={`text-sm sm:text-base font-mono font-semibold transition-colors duration-300 ${
                       isCurrentTrack ? 'text-police-red' : 'text-muted-foreground group-hover:text-foreground'
                     }`}>{track.duration}</span>
 

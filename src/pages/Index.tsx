@@ -195,7 +195,7 @@ This track chronicles the beginning of the Osteen investigation—where the firs
   return (
     <div className="min-h-screen bg-black text-white selection:bg-police-red selection:text-white">
       {/* Top Banner */}
-      <div className="bg-police-red text-white py-2 px-4 text-center font-bold text-sm tracking-widest uppercase">
+      <div className="bg-police-red text-white py-2 px-4 text-center font-bold text-[11px] sm:text-sm tracking-wide sm:tracking-widest uppercase">
         Now Streaming on all platforms • Deploying to badactors.online
       </div>
 
@@ -210,9 +210,9 @@ This track chronicles the beginning of the Osteen investigation—where the firs
         onDownloadClick={() => setIsDownloadModalOpen(true)}
       />
 
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid lg:grid-cols-3 gap-12">
-          <div className="lg:col-span-2 space-y-24">
+      <div className="container mx-auto px-4 py-8 sm:py-12">
+        <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+          <div className="lg:col-span-2 space-y-16 md:space-y-24">
             <TrackList
               tracks={tracks}
               stories={stories}
@@ -223,10 +223,10 @@ This track chronicles the beginning of the Osteen investigation—where the firs
             <StoriesSection stories={stories} onTrackSelect={setCurrentTrack} />
           </div>
           
-          <div className="space-y-12">
-            <div className="sticky top-8 space-y-12">
-              <div className="bg-zinc-900 border-2 border-police-red p-8">
-                <h3 className="text-2xl font-black text-police-red mb-6 uppercase tracking-tighter italic">Streaming Platforms</h3>
+          <div className="space-y-10 md:space-y-12">
+            <div className="lg:sticky lg:top-8 space-y-10 md:space-y-12">
+              <div className="bg-zinc-900 border-2 border-police-red p-5 sm:p-8">
+                <h3 className="text-xl sm:text-2xl font-black text-police-red mb-5 sm:mb-6 uppercase tracking-tighter italic">Streaming Platforms</h3>
                 <div className="grid grid-cols-1 gap-3">
                   {streamingLinks.map((link) => (
                     <a
@@ -234,7 +234,7 @@ This track chronicles the beginning of the Osteen investigation—where the firs
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between p-4 bg-black border border-white/10 hover:border-police-red transition-all group"
+                      className="flex items-center justify-between p-3 sm:p-4 bg-black border border-white/10 hover:border-police-red transition-all group"
                     >
                       <span className="font-bold group-hover:text-police-red">{link.platform}</span>
                       <div className="w-8 h-8 rounded-full bg-police-red/10 flex items-center justify-center group-hover:bg-police-red transition-all">
@@ -247,8 +247,8 @@ This track chronicles the beginning of the Osteen investigation—where the firs
 
               <UpcomingAlbums albums={upcomingAlbums} />
 
-              <div className="bg-crime-yellow text-black p-8 border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                <h3 className="text-2xl font-black mb-4 uppercase tracking-tighter">Volume 2 Sneak Peek</h3>
+              <div className="bg-crime-yellow text-black p-5 sm:p-8 border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                <h3 className="text-xl sm:text-2xl font-black mb-4 uppercase tracking-tighter">Volume 2 Sneak Peek</h3>
                 <p className="font-bold mb-6 italic leading-snug">
                   "They thought the first volume was the end. It was just the introduction."
                 </p>
@@ -280,20 +280,20 @@ This track chronicles the beginning of the Osteen investigation—where the firs
         downloadUrl={import.meta.env.VITE_DOWNLOAD_URL || "https://distrokid.com/hyperfollow/donmatthews/bad-actors-volume-1"}
       />
       
-      <footer className="py-24 border-t-4 border-police-red bg-zinc-950 mt-24">
+      <footer className="py-14 sm:py-24 border-t-4 border-police-red bg-zinc-950 mt-14 sm:mt-24">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="text-left">
-              <h2 className="text-4xl font-black text-white mb-4 tracking-tighter italic">BAD ACTORS</h2>
-              <p className="text-zinc-500 max-w-md">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+            <div className="text-center md:text-left">
+              <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tighter italic">BAD ACTORS</h2>
+              <p className="text-zinc-500 max-w-md mx-auto md:mx-0">
                 A documentary music project by Don Matthews. Exposing institutional corruption, one track at a time. North Mississippi and beyond.
               </p>
             </div>
-            <div className="text-right">
-              <p className="text-white font-bold text-lg">
+            <div className="text-center md:text-right">
+              <p className="text-white font-bold text-base sm:text-lg">
                 © 2025 Don Matthews. All rights reserved.
               </p>
-              <p className="text-police-red font-black text-xl mt-2 tracking-tighter uppercase italic">
+              <p className="text-police-red font-black text-lg sm:text-xl mt-2 tracking-tighter uppercase italic">
                 Truth. Justice. Accountability.
               </p>
               <p className="text-zinc-600 text-sm mt-4 font-mono">
