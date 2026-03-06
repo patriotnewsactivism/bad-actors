@@ -244,6 +244,68 @@ This track chronicles the beginning of the Osteen investigation—where the firs
                 </div>
               </div>
 
+              <div className="bg-zinc-900 border-2 border-crime-yellow p-5 sm:p-8">
+                <h3 className="text-xl sm:text-2xl font-black text-crime-yellow mb-5 sm:mb-6 uppercase tracking-tighter italic">Support the Mission</h3>
+                <p className="text-zinc-400 text-sm mb-6 leading-relaxed">
+                  Help us continue exposing corruption and fighting for accountability. Every contribution directly supports the project.
+                </p>
+                <div className="space-y-4">
+                  <a
+                    href="https://buymeacoffee.com/badactors"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-4 bg-[#FFDD00] text-black font-black uppercase tracking-wider hover:bg-[#FFDD00]/90 transition-all border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                  >
+                    <span className="text-2xl">☕</span>
+                    Buy Me a Coffee
+                  </a>
+                  <div className="p-4 bg-black border border-crime-yellow/30 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-[#00D632] rounded-full flex items-center justify-center font-black text-white text-xl">
+                        $
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-zinc-500 uppercase font-black tracking-widest">CashApp</p>
+                        <p className="font-bold text-white">$1Aaudit</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => {
+                        navigator.clipboard.writeText("$1Aaudit");
+                        toast.success("CashApp tag copied to clipboard!");
+                      }}
+                      className="text-[10px] bg-zinc-800 hover:bg-zinc-700 text-white px-2 py-1 uppercase font-bold transition-colors"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white text-black p-5 sm:p-8 border-2 border-police-red shadow-[8px_8px_0px_0px_rgba(255,0,0,1)]">
+                <h3 className="text-xl sm:text-2xl font-black mb-4 uppercase tracking-tighter italic">Stay Informed</h3>
+                <p className="font-bold mb-6 text-sm leading-tight">
+                  Follow the latest in constitutional rights and investigative journalism.
+                </p>
+                <a
+                  href="https://wtpnews.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block"
+                >
+                  <div className="bg-black text-white p-4 flex items-center justify-between hover:bg-police-red transition-all duration-300">
+                    <div>
+                      <p className="text-[10px] text-police-red group-hover:text-white uppercase font-black tracking-[0.2em] mb-1">Featured Source</p>
+                      <p className="text-lg font-black tracking-tighter">We The People News</p>
+                      <p className="text-xs text-zinc-400 group-hover:text-white/80 font-mono italic">wtpnews.org</p>
+                    </div>
+                    <div className="w-10 h-10 border-2 border-police-red group-hover:border-white flex items-center justify-center">
+                      <span className="text-xl">→</span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+
               <UpcomingAlbums albums={upcomingAlbums} />
 
               <div className="bg-crime-yellow text-black p-5 sm:p-8 border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
