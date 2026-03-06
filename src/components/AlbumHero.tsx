@@ -99,7 +99,18 @@ const AlbumHero = ({
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-black">
-      <div className="absolute inset-0">
+      {/* --- CINEMATIC BACKGROUND WITH IMAGE --- */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <img 
+          src="/bad-actors-cover.jpg" 
+          alt="Don Matthews Background" 
+          className="w-full h-full object-cover object-top opacity-30 mix-blend-luminosity"
+        />
+        {/* Dark gradients to ensure buttons and text pop and remain readable */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black lg:via-black/50 to-black" />
+        
+        {/* Red Accent Lines */}
         <div className="absolute top-0 left-0 right-0 h-0.5 bg-police-red/30" />
         <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-police-red/30" />
         <div className="absolute top-8 left-0 right-0 h-0.25 bg-police-red/20" />
@@ -117,7 +128,7 @@ const AlbumHero = ({
                 <div className="absolute inset-0 bg-gradient-to-br from-police-red/20 to-crime-yellow/10 rounded-sm blur-xl" />
                 <div className="relative w-full h-full bg-black rounded-sm overflow-hidden border border-police-red/50 shadow-[0_0_30px_hsl(var(--police-red)/0.2)]">
                   <img
-                    src="/bad-actors-cover.avif"
+                    src="/bad-actors-cover.jpg"
                     alt="Bad Actors Album Cover"
                     className="w-full h-full object-cover"
                   />
@@ -178,7 +189,7 @@ const AlbumHero = ({
                   <Download className="w-5 h-5" />
                   Free Download
                 </button>
-                {/* NEW DIGITAL BUSINESS CARD BUTTON */}
+                {/* DIGITAL BUSINESS CARD BUTTON */}
                 <a
                   href="https://popl.co/card/MigDFcPV/2/preview?sho"
                   target="_blank"
