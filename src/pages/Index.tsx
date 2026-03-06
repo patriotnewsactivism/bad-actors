@@ -44,9 +44,8 @@ const Index = () => {
     { platform: "Apple Music", url: "https://music.apple.com/au/album/bad-actors-volume-1/1863402949" },
     { platform: "Spotify", url: "https://open.spotify.com/album/bad-actors-volume-1" },
     { platform: "YouTube Music", url: "https://music.youtube.com/playlist?list=OLAK5uy_m5AmZDrY2kX__kNhYE1jkhmY1LLTZi1cE&si=dyuOTX4AcfYaUuo0" },
-    { platform: "Amazon Music", url: "https://music.amazon.com/albums/B0DFV8Y7X5" },
-    { platform: "Tidal", url: "https://tidal.com/browse/album/384265741" },
-    { platform: "Deezer", url: "https://www.deezer.com/album/636845241" },
+    { platform: "BandLab", url: "https://www.bandlab.com/badactors" },
+    { platform: "SoundCloud", url: "https://soundcloud.com/don-matthews-268378810/sets/bad-actors-volume-1" },
   ];
 
   const handleEmailSubmit = async (email: string, name?: string) => {

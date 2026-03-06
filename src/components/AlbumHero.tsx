@@ -194,7 +194,7 @@ const AlbumHero = ({
                   href="https://popl.co/card/MigDFcPV/2/preview?sho"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto justify-center flex items-center gap-2 px-5 py-3 bg-black border border-police-red/50 text-police-red font-semibold uppercase tracking-wide hover:bg-police-red/10 hover:text-white transition-all duration-300"
+                  className="w-full sm:w-auto justify-center flex items-center gap-2 px-5 py-3 bg-crime-yellow text-black font-bold uppercase tracking-wide hover:bg-crime-yellow/80 transition-all duration-300 border border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                 >
                   Digital Business Card
                   <ExternalLink className="w-4 h-4" />
@@ -268,7 +268,7 @@ const AlbumHero = ({
               Available Now On All Major Platforms
             </p>
             <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-              Spotify • Apple Music • YouTube Music • Amazon Music • Tidal • Deezer • and more
+              Spotify • Apple Music • YouTube Music • BandLab • SoundCloud • and more
             </p>
           </div>
         </div>
