@@ -1,4 +1,4 @@
-import { Calendar, Disc3, ChevronRight } from "lucide-react";
+import { Disc3, ChevronRight } from "lucide-react";
 
 interface Album {
   title: string;
@@ -13,20 +13,20 @@ interface UpcomingAlbumsProps {
 
 const UpcomingAlbums = ({ albums }: UpcomingAlbumsProps) => {
   return (
-    <div className="bg-zinc-900 border-2 border-crime-yellow p-8">
-      <div className="flex items-center gap-3 mb-6">
-        <Disc3 className="w-8 h-8 text-crime-yellow animate-spin" style={{ animationDuration: '4s' }} />
-        <h3 className="text-2xl font-black text-crime-yellow uppercase tracking-tighter italic">In Progress</h3>
+    <div className="bg-zinc-900 border-2 border-crime-yellow p-5 sm:p-8">
+      <div className="flex items-center gap-2 sm:gap-3 mb-5 sm:mb-6">
+        <Disc3 className="w-6 h-6 sm:w-8 sm:h-8 text-crime-yellow animate-spin" style={{ animationDuration: '4s' }} />
+        <h3 className="text-xl sm:text-2xl font-black text-crime-yellow uppercase tracking-tighter italic">In Progress</h3>
       </div>
 
       {albums.map((album, index) => (
         <div key={index} className="space-y-6">
           <div>
-            <h4 className="text-xl font-black text-white mb-2 uppercase tracking-tight">{album.title}</h4>
+            <h4 className="text-lg sm:text-xl font-black text-white mb-2 uppercase tracking-tight">{album.title}</h4>
             <div className="inline-block bg-crime-yellow text-black text-[10px] font-black uppercase px-2 py-0.5 mb-3">
               {album.status}
             </div>
-            <p className="text-zinc-400 text-sm leading-relaxed">
+            <p className="text-zinc-400 text-sm leading-relaxed break-words">
               {album.description}
             </p>
           </div>
