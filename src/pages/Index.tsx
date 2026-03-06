@@ -251,14 +251,17 @@ This track chronicles the beginning of the Osteen investigation—where the firs
                 <p className="font-bold mb-6 italic leading-snug">
                   "They thought the first volume was the end. It was just the introduction."
                 </p>
-                <div className="aspect-video bg-black flex items-center justify-center border-2 border-black group cursor-pointer relative overflow-hidden">
-                  <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-40 group-hover:scale-110 transition-transform duration-700" />
-                  <div className="relative z-10 text-center">
-                    <div className="w-12 h-12 rounded-full bg-crime-yellow flex items-center justify-center mx-auto mb-2 border-2 border-black">
-                      <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-black border-b-[6px] border-b-transparent ml-1" />
-                    </div>
-                    <span className="text-xs font-black uppercase">Play Teaser</span>
-                  </div>
+                <div className="aspect-video bg-black border-2 border-black relative overflow-hidden">
+                  <iframe 
+                    width="100%" 
+                    height="100%" 
+                    src="https://www.youtube.com/embed/snHe8Wg079o" 
+                    title="Signed Your Name - Sneak Peek" 
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowFullScreen
+                    className="absolute inset-0"
+                  ></iframe>
                 </div>
                 <button 
                   onClick={() => setIsDownloadModalOpen(true)}
