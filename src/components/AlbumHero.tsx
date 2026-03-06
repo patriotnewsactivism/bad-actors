@@ -178,6 +178,16 @@ const AlbumHero = ({
                   <Download className="w-5 h-5" />
                   Free Download
                 </button>
+                {/* NEW DIGITAL BUSINESS CARD BUTTON */}
+                <a
+                  href="https://popl.co/card/MigDFcPV/2/preview?sho"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto justify-center flex items-center gap-2 px-5 py-3 bg-black border border-police-red/50 text-police-red font-semibold uppercase tracking-wide hover:bg-police-red/10 hover:text-white transition-all duration-300"
+                >
+                  Digital Business Card
+                  <ExternalLink className="w-4 h-4" />
+                </a>
                 {streamingLinks.map((link) => (
                   <a
                     key={link.platform}
