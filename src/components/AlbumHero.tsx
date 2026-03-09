@@ -102,7 +102,7 @@ const AlbumHero = ({
       {/* --- CINEMATIC BACKGROUND WITH IMAGE --- */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <img 
-          src="/bad-actors-cover.jpg" 
+          src="/got-a-dolla.jpg" 
           alt="Don Matthews Background" 
           className="w-full h-full object-cover object-top opacity-30 mix-blend-luminosity"
         />

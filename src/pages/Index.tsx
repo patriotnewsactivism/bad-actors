@@ -198,6 +198,48 @@ This track chronicles the beginning of the Osteen investigation—where the firs
         Now Streaming on all platforms • Deploying to badactors.online
       </div>
 
+      {/* Tour Headline Section */}
+      <section className="relative w-full bg-zinc-950 py-12 sm:py-20 border-b-4 border-police-red flex flex-col items-center justify-center overflow-hidden">
+        {/* Background glow effects */}
+        <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-police-red/10 rounded-full blur-[100px] animate-pulse" />
+        <div className="absolute bottom-1/2 right-1/4 w-64 h-64 bg-crime-yellow/5 rounded-full blur-[100px] animate-pulse delay-700" />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex flex-col items-center">
+            <div className="relative group max-w-[600px] w-full">
+              {/* Poster frame/border */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-police-red via-crime-yellow/50 to-police-red rounded-sm blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+              
+              <div className="relative bg-black border-2 border-police-red/50 shadow-[0_0_50px_rgba(255,0,0,0.3)] overflow-hidden">
+                <img 
+                  src="/got-a-dolla.jpg" 
+                  alt="GOT A DOLLA Tour Poster" 
+                  className="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+              </div>
+
+              {/* Decorative elements */}
+              <div className="absolute -top-4 -left-4 w-12 h-12 border-t-4 border-l-4 border-police-red" />
+              <div className="absolute -bottom-4 -right-4 w-12 h-12 border-b-4 border-r-4 border-police-red" />
+            </div>
+
+            <div className="mt-12 text-center space-y-4">
+              <h2 className="text-4xl sm:text-6xl md:text-7xl font-black italic tracking-tighter text-white uppercase leading-none">
+                "GOT A <span className="text-police-red">DOLLA</span>" TOUR
+              </h2>
+              <div className="h-1 w-24 bg-police-red mx-auto" />
+              <p className="text-xl sm:text-2xl font-bold text-crime-yellow tracking-widest uppercase italic">
+                PROMOTING BAD ACTORS
+              </p>
+              <p className="text-zinc-400 font-mono text-sm sm:text-base tracking-widest uppercase">
+                February 20 - August 31 • Galveston, Texas
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <AlbumHero
         title="Bad Actors - Volume 1"
         artist="Don Matthews"
