@@ -1,24 +1,67 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import AlbumHero from "@/components/AlbumHero";
 import TrackList from "@/components/TrackList";
 import StoriesSection from "@/components/StoriesSection";
 import UpcomingAlbums from "@/components/UpcomingAlbums";
 import EmailCapture from "@/components/EmailCapture";
+import InlineEmailCapture from "@/components/InlineEmailCapture";
+import StickyDownloadBar from "@/components/StickyDownloadBar";
+import FooterEmailForm from "@/components/FooterEmailForm";
 import { emailService } from "@/lib/emailService";
+import { useSubscriberCount } from "@/hooks/use-subscriber-count";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 
 const Index = () => {
   const [currentTrack, setCurrentTrack] = useState<number>(1);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const [emailSource, setEmailSource] = useState<string>('hero');
+  const subscriberCount = useSubscriberCount();
+  const isMobile = useIsMobile();
+
+  const hasSubscribed = useCallback(() => {
+    const storedEmails = localStorage.getItem("captured_emails");
+    if (storedEmails) {
+      const emails = JSON.parse(storedEmails);
+      return emails.length > 0;
+    }
+    return false;
+  }, []);
 
   useEffect(() => {
     emailService.init();
-    // Check for success message from download
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('download') === 'success') {
       toast.success("Check your email for the download link!");
     }
   }, []);
+
+  // Timed popup: show after 20 seconds if user hasn't subscribed
+  useEffect(() => {
+    if (hasSubscribed()) return;
+    const timer = setTimeout(() => {
+      if (!hasSubscribed() && !isDownloadModalOpen) {
+        setEmailSource('timed-popup');
+        setIsDownloadModalOpen(true);
+      }
+    }, 20000);
+    return () => clearTimeout(timer);
+  }, [hasSubscribed, isDownloadModalOpen]);
+
+  // Exit intent: desktop only, once per session
+  useEffect(() => {
+    if (isMobile) return;
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY > 0) return; // Only trigger when mouse moves above viewport
+      if (sessionStorage.getItem("exit_intent_shown")) return;
+      if (hasSubscribed()) return;
+      sessionStorage.setItem("exit_intent_shown", "true");
+      setEmailSource('exit-intent');
+      setIsDownloadModalOpen(true);
+    };
+    document.addEventListener("mouseleave", handleMouseLeave);
+    return () => document.removeEventListener("mouseleave", handleMouseLeave);
+  }, [isMobile, hasSubscribed]);
 
   const tracks = [
     { number: 1, title: "Silence Ain't Consent", duration: "3:33" },
@@ -48,25 +91,38 @@ const Index = () => {
     { platform: "SoundCloud", url: "https://soundcloud.com/don-matthews-268378810/sets/bad-actors-volume-1" },
   ];
 
+  const openDownloadModal = (source: string) => {
+    setEmailSource(source);
+    setIsDownloadModalOpen(true);
+  };
+
   const handleEmailSubmit = async (email: string, name?: string) => {
     const downloadUrl = import.meta.env.VITE_DOWNLOAD_URL || "https://distrokid.com/hyperfollow/donmatthews/bad-actors-volume-1";
-    
+
+    // Save to Supabase database first
+    const dbResult = await emailService.saveSubscriber(email, name, emailSource);
+
+    let emailSent = false;
     try {
-      // Send the email via EmailJS (which acts as our "save" mechanism for now)
       await emailService.sendDownloadEmail(email, name, downloadUrl);
-      
-      // Also store in localStorage as a backup
-      const storedEmails = localStorage.getItem("captured_emails");
-      const emails = storedEmails ? JSON.parse(storedEmails) : [];
-      if (!emails.some((e: any) => e.email === email)) {
-        emails.push({ email, name, date: new Date().toISOString() });
-        localStorage.setItem("captured_emails", JSON.stringify(emails));
-      }
-      
-      toast.success("Thank you! Your download link has been sent to " + email);
+      emailSent = true;
     } catch (error) {
-      console.error("Failed to save email:", error);
-      toast.error("There was an error saving your email. Please try again.");
+      console.error("Failed to send email:", error);
+    }
+
+    // localStorage backup
+    const storedEmails = localStorage.getItem("captured_emails");
+    const emails = storedEmails ? JSON.parse(storedEmails) : [];
+    if (!emails.some((e: any) => e.email === email)) {
+      emails.push({ email, name, source: emailSource, date: new Date().toISOString() });
+      localStorage.setItem("captured_emails", JSON.stringify(emails));
+    }
+
+    if (dbResult.success || emailSent) {
+      toast.success("Thank you! Your download link has been sent to " + email);
+    } else {
+      toast.error("There was an error. Please try again.");
+      throw new Error("Both database save and email send failed");
     }
   };
 
@@ -248,7 +304,7 @@ This track chronicles the beginning of the Osteen investigation—where the firs
         currentTrack={currentTrack}
         tracks={tracks}
         streamingLinks={streamingLinks}
-        onDownloadClick={() => setIsDownloadModalOpen(true)}
+        onDownloadClick={() => openDownloadModal('hero')}
       />
 
       <div className="container mx-auto px-4 py-8 sm:py-12">
@@ -260,7 +316,16 @@ This track chronicles the beginning of the Osteen investigation—where the firs
               currentTrack={currentTrack}
               onTrackSelect={setCurrentTrack}
             />
-            
+
+            <InlineEmailCapture
+              onSubmit={async (email, name) => {
+                setEmailSource('inline-cta');
+                await handleEmailSubmit(email, name);
+              }}
+              subscriberCount={subscriberCount}
+              downloadUrl={import.meta.env.VITE_DOWNLOAD_URL || "https://distrokid.com/hyperfollow/donmatthews/bad-actors-volume-1"}
+            />
+
             <StoriesSection stories={stories} onTrackSelect={setCurrentTrack} />
           </div>
           
@@ -368,7 +433,7 @@ This track chronicles the beginning of the Osteen investigation—where the firs
                   ></iframe>
                 </div>
                 <button 
-                  onClick={() => setIsDownloadModalOpen(true)}
+                  onClick={() => openDownloadModal('volume2-sneak-peek')}
                   className="w-full mt-6 py-4 bg-black text-white font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors"
                 >
                   Get Early Access
@@ -379,6 +444,8 @@ This track chronicles the beginning of the Osteen investigation—where the firs
         </div>
       </div>
 
+      <StickyDownloadBar onDownloadClick={() => openDownloadModal('sticky-bar')} />
+
       <EmailCapture
         isOpen={isDownloadModalOpen}
         onClose={() => setIsDownloadModalOpen(false)}
@@ -388,12 +455,21 @@ This track chronicles the beginning of the Osteen investigation—where the firs
       
       <footer className="py-14 sm:py-24 border-t-4 border-police-red bg-zinc-950 mt-14 sm:mt-24">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+          <div className="grid md:grid-cols-3 gap-8 md:gap-12 items-start">
             <div className="text-center md:text-left">
               <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tighter italic">BAD ACTORS</h2>
               <p className="text-zinc-500 max-w-md mx-auto md:mx-0">
                 A documentary music project by Don Matthews. Exposing institutional corruption, one track at a time. North Mississippi and beyond.
               </p>
+            </div>
+            <div>
+              <FooterEmailForm
+                onSubmit={async (email) => {
+                  setEmailSource('footer');
+                  await handleEmailSubmit(email);
+                }}
+                subscriberCount={subscriberCount}
+              />
             </div>
             <div className="text-center md:text-right">
               <p className="text-white font-bold text-base sm:text-lg">

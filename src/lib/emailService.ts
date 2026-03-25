@@ -1,4 +1,5 @@
 import emailjs from '@emailjs/browser';
+import { supabase, isSupabaseConfigured } from './supabase';
 
 interface SendDownloadEmailParams {
   email: string;
@@ -10,6 +11,11 @@ interface EmailResponse {
   success: boolean;
   message: string;
   simulation?: boolean;
+}
+
+interface SaveSubscriberResult {
+  success: boolean;
+  duplicate: boolean;
 }
 
 const isConfigured = (): boolean => {
@@ -86,9 +92,62 @@ const sendDownloadEmail = async (
   }
 };
 
+const saveSubscriber = async (
+  email: string,
+  name?: string,
+  source: string = 'website'
+): Promise<SaveSubscriberResult> => {
+  if (!isSupabaseConfigured() || !supabase) {
+    console.log('[Supabase] Not configured — skipping database save for:', email);
+    return { success: false, duplicate: false };
+  }
+
+  try {
+    const { error } = await supabase
+      .from('subscribers')
+      .upsert(
+        { email, name: name || null, source },
+        { onConflict: 'email' }
+      );
+
+    if (error) {
+      console.error('[Supabase] Failed to save subscriber:', error.message);
+      return { success: false, duplicate: false };
+    }
+
+    return { success: true, duplicate: false };
+  } catch (error) {
+    console.error('[Supabase] Error saving subscriber:', error);
+    return { success: false, duplicate: false };
+  }
+};
+
+const getSubscriberCount = async (): Promise<number> => {
+  if (!isSupabaseConfigured() || !supabase) {
+    return 0;
+  }
+
+  try {
+    const { count, error } = await supabase
+      .from('subscribers')
+      .select('*', { count: 'exact', head: true });
+
+    if (error) {
+      console.error('[Supabase] Failed to get subscriber count:', error.message);
+      return 0;
+    }
+
+    return count || 0;
+  } catch {
+    return 0;
+  }
+};
+
 export const emailService = {
   init,
   sendDownloadEmail,
+  saveSubscriber,
+  getSubscriberCount,
 };
 
-export type { EmailResponse, SendDownloadEmailParams };
+export type { EmailResponse, SendDownloadEmailParams, SaveSubscriberResult };
