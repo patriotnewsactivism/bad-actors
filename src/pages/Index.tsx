@@ -5,6 +5,7 @@ import StoriesSection from "@/components/StoriesSection";
 import UpcomingAlbums from "@/components/UpcomingAlbums";
 import EmailCapture from "@/components/EmailCapture";
 import InlineEmailCapture from "@/components/InlineEmailCapture";
+import OriginStory from "@/components/OriginStory";
 import StickyDownloadBar from "@/components/StickyDownloadBar";
 import FooterEmailForm from "@/components/FooterEmailForm";
 import { emailService } from "@/lib/emailService";
@@ -129,9 +130,11 @@ const Index = () => {
   const stories = [
     {
       title: "The Birth of Bad Actors",
-      content: `This album represents more than just music—it's a testimony to truth and justice in a system that often fails both. Each track tells a real story, documents real corruption, and demands real accountability.
+      content: `Bad Actors was born out of the Galveston DWI Scandal — a web of corruption that stretched from the coast of Galveston, Texas to Lafayette County, Mississippi. Two jurisdictions, hundreds of miles apart, connected by manufactured charges, coordinated retaliation, and officials who thought they were above the law.
 
-The title "Bad Actors" refers to those in positions of power who abuse their authority, betray the public trust, and escape consequences. This is my way of shining a light into the darkest corners of institutional corruption in North Mississippi and beyond.`
+I was completely fed up. Fed up with false reports, perjured testimony, and a system that protected the people breaking the law instead of the people exposing it. I had the evidence. I had the documents. But the courts weren't listening. So I decided to tell the story the only way they couldn't suppress it — through music.
+
+What I never expected was how quickly it all came together. Once I started writing, seventeen tracks poured out like testimony that had been waiting years for its day in court. Every betrayal, every false arrest, every lie sworn under oath — compressed into songs backed by real names, real events, and real evidence. The title "Bad Actors" refers to every person in a position of power who abused their authority, betrayed the public trust, and thought they'd escape consequences. This album is their reckoning.`
     },
     {
       trackNumber: 1,
@@ -306,6 +309,8 @@ This track chronicles the beginning of the Osteen investigation—where the firs
         streamingLinks={streamingLinks}
         onDownloadClick={() => openDownloadModal('hero')}
       />
+
+      <OriginStory />
 
       <div className="container mx-auto px-4 py-8 sm:py-12">
         <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
