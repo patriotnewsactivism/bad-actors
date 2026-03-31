@@ -12,6 +12,8 @@ import { useSubscriberCount } from "@/hooks/use-subscriber-count";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 
+const TIMED_POPUP_SESSION_KEY = "timed_popup_shown";
+
 const Index = () => {
   const [currentTrack, setCurrentTrack] = useState<number>(1);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
@@ -39,8 +41,10 @@ const Index = () => {
   // Timed popup: show after 20 seconds if user hasn't subscribed
   useEffect(() => {
     if (hasSubscribed()) return;
+    if (sessionStorage.getItem(TIMED_POPUP_SESSION_KEY)) return;
     const timer = setTimeout(() => {
       if (!hasSubscribed() && !isDownloadModalOpen) {
+        sessionStorage.setItem(TIMED_POPUP_SESSION_KEY, "true");
         setEmailSource('timed-popup');
         setIsDownloadModalOpen(true);
       }
