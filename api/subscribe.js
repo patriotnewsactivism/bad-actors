@@ -32,7 +32,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Upsert subscriber via Supabase REST API
     const response = await fetch(
       `${supabaseUrl}/rest/v1/bad_actors_subscribers`,
       {
@@ -41,7 +40,7 @@ export default async function handler(req, res) {
           'apikey': supabaseKey,
           'Authorization': `Bearer ${supabaseKey}`,
           'Content-Type': 'application/json',
-          'Prefer': 'resolution=merge-duplicates,return=minimal',
+          'Prefer': 'return=minimal',
         },
         body: JSON.stringify({
           email: email.toLowerCase().trim(),
@@ -51,13 +50,18 @@ export default async function handler(req, res) {
       }
     );
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('[API] Supabase insert error:', errText);
-      return res.status(500).json({ error: 'Failed to save subscriber' });
+    if (response.ok) {
+      return res.status(200).json({ success: true, duplicate: false });
     }
 
-    return res.status(200).json({ success: true });
+    // Handle duplicate email (unique constraint violation)
+    const errText = await response.text();
+    if (response.status === 409 || errText.includes('23505') || errText.includes('duplicate')) {
+      return res.status(200).json({ success: true, duplicate: true });
+    }
+
+    console.error('[API] Supabase insert error:', errText);
+    return res.status(500).json({ error: 'Failed to save subscriber' });
   } catch (error) {
     console.error('[API] Failed to save subscriber:', error.message);
     return res.status(500).json({ error: 'Failed to save subscriber' });
