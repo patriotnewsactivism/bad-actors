@@ -1,5 +1,3 @@
-import { neon } from '@neondatabase/serverless';
-
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,14 +12,30 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  if (!process.env.DATABASE_URL) {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
     return res.status(200).json({ count: 0 });
   }
 
   try {
-    const sql = neon(process.env.DATABASE_URL);
-    const result = await sql`SELECT COUNT(*) as count FROM subscribers`;
-    return res.status(200).json({ count: parseInt(result[0].count, 10) || 0 });
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/bad_actors_subscribers?select=count`,
+      {
+        method: 'HEAD',
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Prefer': 'count=exact',
+        },
+      }
+    );
+
+    const range = response.headers.get('content-range');
+    const count = range ? parseInt(range.split('/')[1], 10) || 0 : 0;
+
+    return res.status(200).json({ count });
   } catch (error) {
     console.error('[API] Failed to get subscriber count:', error.message);
     return res.status(200).json({ count: 0 });
