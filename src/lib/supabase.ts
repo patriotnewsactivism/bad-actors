@@ -1,10 +1,7 @@
-import { createClient } from '@supabase/supabase-js';
+// Database connections are now handled server-side via /api/ routes.
+// This file is kept for backwards compatibility but Supabase is no longer used.
+// Email subscribers are stored in Neon (PostgreSQL) via Vercel serverless functions.
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+export const supabase = null;
 
-export const supabase = supabaseUrl && supabaseAnonKey
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
-
-export const isSupabaseConfigured = (): boolean => !!supabase;
+export const isSupabaseConfigured = (): boolean => false;
