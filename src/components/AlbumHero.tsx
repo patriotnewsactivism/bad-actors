@@ -12,6 +12,7 @@ interface Track {
   title: string;
   duration: string;
   youtubeId?: string;
+  audioSrc?: string;
 }
 
 interface AlbumHeroProps {
@@ -37,16 +38,45 @@ const AlbumHero = ({
 }: AlbumHeroProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [progress, setProgress] = useState(0);
   const playerRef = useRef<YouTubePlayer | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const currentTrackData = tracks.find((t) => t.number === currentTrack);
+  const hasNativeAudio = Boolean(currentTrackData?.audioSrc);
 
-  // Sync play/pause state with player
+  // Native audio: load new track source whenever the selected track changes
   useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !currentTrackData?.audioSrc) return;
+    if (audio.src.endsWith(currentTrackData.audioSrc)) return;
+    audio.src = currentTrackData.audioSrc;
+    setProgress(0);
+    if (isPlaying) {
+      audio.play().catch(() => setIsPlaying(false));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTrackData?.audioSrc]);
+
+  // Native audio: sync play/pause
+  useEffect(() => {
+    if (!hasNativeAudio) return;
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) {
+      audio.play().catch(() => setIsPlaying(false));
+    } else {
+      audio.pause();
+    }
+  }, [isPlaying, hasNativeAudio]);
+
+  // Sync play/pause state with YouTube player (only used when no native audio source exists)
+  useEffect(() => {
+    if (hasNativeAudio) return;
     if (playerRef.current) {
       if (isPlaying) {
         playerRef.current.playVideo();
@@ -54,30 +84,25 @@ const AlbumHero = ({
         playerRef.current.pauseVideo();
       }
     }
-  }, [isPlaying]);
+  }, [isPlaying, hasNativeAudio]);
 
-  // Handle track changes
+  // Handle track changes (YouTube path only)
   useEffect(() => {
+    if (hasNativeAudio) return;
     if (playerRef.current) {
       if (currentTrackData?.youtubeId) {
         playerRef.current.loadVideoById(currentTrackData.youtubeId);
       } else if (youtubePlaylistId) {
-        // If we are in playlist mode, we might need to ensure the playlist is loaded
-        // But for now, assuming the player was initialized with the playlist
-        // We can just skip to the index
         playerRef.current.playVideoAt(currentTrack - 1);
       }
     }
-  }, [currentTrack, currentTrackData, youtubePlaylistId]);
+  }, [currentTrack, currentTrackData, youtubePlaylistId, hasNativeAudio]);
 
   const onPlayerReady = (event: YouTubeEvent) => {
     playerRef.current = event.target;
-    // Set initial volume if needed, or handle autoplay policy
-    // Note: Mobile browsers and some desktop policies might block unmuted autoplay
   };
 
   const onPlayerStateChange = (event: YouTubeEvent) => {
-    // 1 = playing, 2 = paused
     if (event.data === 1) {
       setIsPlaying(true);
     } else if (event.data === 2) {
@@ -96,6 +121,13 @@ const AlbumHero = ({
       rel: 0,
     },
   }), [youtubePlaylistId]);
+
+  const formatTime = (seconds: number) => {
+    if (!Number.isFinite(seconds)) return "0:00";
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  };
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-black">
@@ -119,6 +151,16 @@ const AlbumHero = ({
 
       <div className="absolute top-1/4 left-1/4 w-56 h-56 md:w-96 md:h-96 bg-police-red/5 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 w-48 h-48 md:w-80 md:h-80 bg-crime-yellow/5 rounded-full blur-3xl" />
+
+      {/* Shared native audio element driving whichever track is active */}
+      <audio
+        ref={audioRef}
+        onEnded={() => setIsPlaying(false)}
+        onTimeUpdate={(e) => {
+          const el = e.currentTarget;
+          setProgress(el.duration ? el.currentTime / el.duration : 0);
+        }}
+      />
 
       <div className="container mx-auto px-4 relative z-10 py-10 md:py-12">
         <div className="max-w-7xl mx-auto">
@@ -161,12 +203,12 @@ const AlbumHero = ({
                 </div>
 
                 {currentTrackData && (
-                  <div className="p-3 md:p-4 bg-black/80 border border-police-red/50 inline-block mx-auto lg:mx-0 max-w-full">
+                  <div className="p-3 md:p-4 bg-black/80 border border-police-red/50 inline-block mx-auto lg:mx-0 max-w-full w-full sm:w-auto">
                     <div className="flex items-center gap-2 sm:gap-3">
                       <div className="p-2 bg-police-red/20 shrink-0">
                         <span className="text-white font-bold text-base sm:text-lg">{currentTrackData.number}</span>
                       </div>
-                      <div className="text-left min-w-0">
+                      <div className="text-left min-w-0 flex-1">
                         <p className="text-foreground font-semibold text-base sm:text-lg leading-tight break-words">{currentTrackData.title}</p>
                         <p className="text-muted-foreground text-sm">{currentTrackData.duration}</p>
                       </div>
@@ -177,6 +219,23 @@ const AlbumHero = ({
                         {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
                       </button>
                     </div>
+                    {hasNativeAudio && (
+                      <div
+                        className="mt-3 h-1.5 bg-white/10 cursor-pointer relative"
+                        onClick={(e) => {
+                          const audio = audioRef.current;
+                          if (!audio || !audio.duration) return;
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const ratio = (e.clientX - rect.left) / rect.width;
+                          audio.currentTime = ratio * audio.duration;
+                        }}
+                      >
+                        <div
+                          className="h-full bg-police-red transition-[width] duration-150"
+                          style={{ width: `${progress * 100}%` }}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -217,7 +276,43 @@ const AlbumHero = ({
             <div className={`${mounted ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
               <div className="relative">
                 <div className="relative bg-black border border-police-red/50 overflow-hidden shadow-[0_0_30px_hsl(var(--police-red)/0.2)]">
-                  {youtubePlaylistId || currentTrackData?.youtubeId ? (
+                  {hasNativeAudio ? (
+                    <div className="w-full h-[220px] sm:h-[300px] md:h-[360px] lg:h-[400px] flex flex-col items-center justify-center bg-black border border-police-red/50 gap-6 p-6">
+                      <img
+                        src="/bad-actors-cover.jpg"
+                        alt="Bad Actors Album Cover"
+                        className="w-28 h-28 sm:w-36 sm:h-36 object-cover border border-police-red/50"
+                      />
+                      <button
+                        onClick={() => setIsPlaying(!isPlaying)}
+                        className="w-16 h-16 rounded-full bg-police-red/20 border-2 border-police-red text-white flex items-center justify-center hover:bg-police-red/30 transition-colors"
+                        aria-label={isPlaying ? "Pause" : "Play"}
+                      >
+                        {isPlaying ? <Pause className="w-7 h-7" /> : <Play className="w-7 h-7 ml-1" />}
+                      </button>
+                      <div className="w-full max-w-sm">
+                        <div
+                          className="h-1.5 bg-white/10 cursor-pointer relative"
+                          onClick={(e) => {
+                            const audio = audioRef.current;
+                            if (!audio || !audio.duration) return;
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            const ratio = (e.clientX - rect.left) / rect.width;
+                            audio.currentTime = ratio * audio.duration;
+                          }}
+                        >
+                          <div
+                            className="h-full bg-police-red transition-[width] duration-150"
+                            style={{ width: `${progress * 100}%` }}
+                          />
+                        </div>
+                        <div className="flex justify-between mt-1 text-xs text-muted-foreground font-mono">
+                          <span>{formatTime((audioRef.current?.currentTime) || 0)}</span>
+                          <span>{currentTrackData?.duration}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : youtubePlaylistId || currentTrackData?.youtubeId ? (
                     <YouTube
                       videoId={currentTrackData?.youtubeId}
                       opts={opts}
@@ -253,11 +348,9 @@ const AlbumHero = ({
                       </span>
                     </div>
                   </div>
-                  {(youtubePlaylistId && !currentTrackData?.youtubeId) && (
-                    <p className="text-muted-foreground text-xs text-center">
-                      Click tracks in the player to switch songs
-                    </p>
-                  )}
+                  <p className="text-muted-foreground text-xs text-center">
+                    Click any track below to play it right here — no redirect.
+                  </p>
                 </div>
               </div>
             </div>

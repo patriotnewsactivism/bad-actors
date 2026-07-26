@@ -11,6 +11,7 @@ import { emailService } from "@/lib/emailService";
 import { useSubscriberCount } from "@/hooks/use-subscriber-count";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
+import { tracks } from "@/data/tracks";
 
 const TIMED_POPUP_SESSION_KEY = "timed_popup_shown";
 
@@ -35,6 +36,13 @@ const Index = () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('download') === 'success') {
       toast.success("Check your email for the download link!");
+    }
+    const playParam = urlParams.get('play');
+    if (playParam) {
+      const trackNumber = parseInt(playParam, 10);
+      if (!Number.isNaN(trackNumber) && tracks.some(t => t.number === trackNumber)) {
+        setCurrentTrack(trackNumber);
+      }
     }
   }, []);
 
@@ -67,25 +75,7 @@ const Index = () => {
     return () => document.removeEventListener("mouseleave", handleMouseLeave);
   }, [isMobile, hasSubscribed]);
 
-  const tracks = [
-    { number: 1, title: "Silence Ain't Consent", duration: "3:33" },
-    { number: 2, title: "Unbroken", duration: "5:04" },
-    { number: 3, title: "In the Shadows Tonight", duration: "4:19" },
-    { number: 4, title: "Double Dipped", duration: "4:17" },
-    { number: 5, title: "Morgan County Blues", duration: "4:04" },
-    { number: 6, title: "The Osteen Files (Exhibit L)", duration: "3:50" },
-    { number: 7, title: "A Warrant For A Lie", duration: "3:34" },
-    { number: 8, title: "The Crowder Files", duration: "3:33" },
-    { number: 9, title: "Eleven Months Too Long", duration: "3:48" },
-    { number: 10, title: "Caught Red Handed", duration: "4:00" },
-    { number: 11, title: "Osteen Lied", duration: "3:36" },
-    { number: 12, title: "Land of the Free, Unless Its Me", duration: "4:12" },
-    { number: 13, title: "She Called The State", duration: "3:55" },
-    { number: 14, title: "Osteen's Fall", duration: "3:27" },
-    { number: 15, title: "The Gaslight Anthem", duration: "2:29" },
-    { number: 16, title: "Governors Gone Too Far", duration: "3:22" },
-    { number: 17, title: "Scandalous", duration: "3:14" },
-  ];
+  // Canonical track data (with audioSrc for native in-page playback) lives in src/data/tracks.ts
 
   const streamingLinks = [
     { platform: "Apple Music", url: "https://music.apple.com/au/album/bad-actors-volume-1/1863402949" },
