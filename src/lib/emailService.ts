@@ -15,6 +15,7 @@ interface EmailResponse {
 interface SaveSubscriberResult {
   success: boolean;
   duplicate: boolean;
+  downloadUrl?: string;
 }
 
 const isConfigured = (): boolean => {
@@ -104,7 +105,7 @@ const saveSubscriber = async (
     }
 
     const data = await response.json();
-    return { success: data.success, duplicate: data.duplicate || false };
+    return { success: data.success, duplicate: data.duplicate || false, downloadUrl: data.downloadUrl };
   } catch (error) {
     console.error('[Database] Error saving subscriber:', error);
     return { success: false, duplicate: false };

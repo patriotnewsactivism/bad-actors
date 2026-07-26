@@ -18,6 +18,7 @@ const TIMED_POPUP_SESSION_KEY = "timed_popup_shown";
 
 const Index = () => {
   const [currentTrack, setCurrentTrack] = useState<number>(1);
+  const [downloadReadyUrl, setDownloadReadyUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showMiniPlayer, setShowMiniPlayer] = useState(false);
@@ -141,18 +142,9 @@ const Index = () => {
   };
 
   const handleEmailSubmit = async (email: string, name?: string) => {
-    const downloadUrl = import.meta.env.VITE_DOWNLOAD_URL || "https://distrokid.com/hyperfollow/donmatthews/bad-actors-volume-1";
-
-    // Save to Supabase database first
+    // The real 17-track zip is delivered + emailed server-side (see api/subscribe.js),
+    // which also notifies Don so he can confirm the funnel is actually working.
     const dbResult = await emailService.saveSubscriber(email, name, emailSource);
-
-    let emailSent = false;
-    try {
-      await emailService.sendDownloadEmail(email, name, downloadUrl);
-      emailSent = true;
-    } catch (error) {
-      console.error("Failed to send email:", error);
-    }
 
     // localStorage backup
     const storedEmails = localStorage.getItem("captured_emails");
@@ -162,11 +154,12 @@ const Index = () => {
       localStorage.setItem("captured_emails", JSON.stringify(emails));
     }
 
-    if (dbResult.success || emailSent) {
-      toast.success("Thank you! Your download link has been sent to " + email);
+    if (dbResult.success && dbResult.downloadUrl) {
+      setDownloadReadyUrl(dbResult.downloadUrl);
+      toast.success("Thank you! Check your email — your download is ready.");
     } else {
       toast.error("There was an error. Please try again.");
-      throw new Error("Both database save and email send failed");
+      throw new Error("Database save failed");
     }
   };
 
@@ -518,9 +511,12 @@ This track chronicles the beginning of the Osteen investigation—where the firs
 
       <EmailCapture
         isOpen={isDownloadModalOpen}
-        onClose={() => setIsDownloadModalOpen(false)}
+        onClose={() => {
+          setIsDownloadModalOpen(false);
+          setDownloadReadyUrl(null);
+        }}
         onSubmit={handleEmailSubmit}
-        downloadUrl={import.meta.env.VITE_DOWNLOAD_URL || "https://distrokid.com/hyperfollow/donmatthews/bad-actors-volume-1"}
+        downloadUrl={downloadReadyUrl || undefined}
       />
       
       <footer className="py-14 sm:py-24 border-t-4 border-police-red bg-zinc-950 mt-14 sm:mt-24">
