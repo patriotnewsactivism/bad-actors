@@ -85,7 +85,7 @@ export default async function handler(req, res) {
     }
 
     console.error('[API] Supabase error:', errText);
-    return res.status(500).json({ error: 'Failed to save subscriber', debug: errText, status: response.status, urlUsed: supabaseUrl, keyLen: (supabaseKey||'').length, keyPrefix: (supabaseKey||'').slice(0,15) });
+    return res.status(500).json({ error: 'Failed to save subscriber' });
   } catch (error) {
     console.error('[API] Error:', error.message);
     return res.status(500).json({ error: 'Failed to save subscriber' });
