@@ -30,7 +30,9 @@ export default async function handler(req, res) {
   if (!emailRegex.test(email)) return res.status(400).json({ error: 'Invalid email format' });
 
   const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_ANON_KEY;
+  // Use service_role for the insert -- RLS blocks anon inserts on this table (confirmed 42501),
+  // and this is a trusted server-side route validating input itself.
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     console.error('[API] Supabase not configured');
@@ -83,7 +85,7 @@ export default async function handler(req, res) {
     }
 
     console.error('[API] Supabase error:', errText);
-    return res.status(500).json({ error: 'Failed to save subscriber', debug: errText, status: response.status });
+    return res.status(500).json({ error: 'Failed to save subscriber' });
   } catch (error) {
     console.error('[API] Error:', error.message);
     return res.status(500).json({ error: 'Failed to save subscriber' });
