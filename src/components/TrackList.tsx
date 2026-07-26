@@ -245,6 +245,14 @@ const TrackList = ({ tracks, stories, currentTrack, onTrackSelect }: TrackListPr
                     </div>
                   )}
 
+                  <img
+                    src="/bad-actors-cover.jpg"
+                    alt=""
+                    aria-hidden="true"
+                    className={`hidden sm:block w-12 h-12 object-cover border shrink-0 transition-all duration-300 ${
+                      isCurrentTrack ? 'border-police-red shadow-[0_0_12px_rgba(220,38,38,0.5)]' : 'border-border/50'
+                    }`}
+                  />
                   <EvidenceMarker number={track.number} isActive={isCurrentTrack} />
 
                   <div className="flex-1 min-w-0">

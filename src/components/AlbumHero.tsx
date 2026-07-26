@@ -24,6 +24,12 @@ interface AlbumHeroProps {
   youtubePlaylistId?: string;
   streamingLinks: StreamingLink[];
   onDownloadClick: () => void;
+  // Playback state now lives in the parent (Index.tsx) so the hero player and
+  // the persistent mini player that follows on scroll share one <audio> element.
+  isPlaying: boolean;
+  setIsPlaying: (playing: boolean) => void;
+  progress: number;
+  onSeek: (ratio: number) => void;
 }
 
 const AlbumHero = ({
@@ -35,12 +41,13 @@ const AlbumHero = ({
   youtubePlaylistId,
   streamingLinks,
   onDownloadClick,
+  isPlaying,
+  setIsPlaying,
+  progress,
+  onSeek,
 }: AlbumHeroProps) => {
-  const [isPlaying, setIsPlaying] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [progress, setProgress] = useState(0);
   const playerRef = useRef<YouTubePlayer | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -48,31 +55,6 @@ const AlbumHero = ({
 
   const currentTrackData = tracks.find((t) => t.number === currentTrack);
   const hasNativeAudio = Boolean(currentTrackData?.audioSrc);
-
-  // Native audio: load new track source whenever the selected track changes
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !currentTrackData?.audioSrc) return;
-    if (audio.src.endsWith(currentTrackData.audioSrc)) return;
-    audio.src = currentTrackData.audioSrc;
-    setProgress(0);
-    if (isPlaying) {
-      audio.play().catch(() => setIsPlaying(false));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTrackData?.audioSrc]);
-
-  // Native audio: sync play/pause
-  useEffect(() => {
-    if (!hasNativeAudio) return;
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isPlaying) {
-      audio.play().catch(() => setIsPlaying(false));
-    } else {
-      audio.pause();
-    }
-  }, [isPlaying, hasNativeAudio]);
 
   // Sync play/pause state with YouTube player (only used when no native audio source exists)
   useEffect(() => {
@@ -152,16 +134,6 @@ const AlbumHero = ({
       <div className="absolute top-1/4 left-1/4 w-56 h-56 md:w-96 md:h-96 bg-police-red/5 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 w-48 h-48 md:w-80 md:h-80 bg-crime-yellow/5 rounded-full blur-3xl" />
 
-      {/* Shared native audio element driving whichever track is active */}
-      <audio
-        ref={audioRef}
-        onEnded={() => setIsPlaying(false)}
-        onTimeUpdate={(e) => {
-          const el = e.currentTarget;
-          setProgress(el.duration ? el.currentTime / el.duration : 0);
-        }}
-      />
-
       <div className="container mx-auto px-4 relative z-10 py-10 md:py-12">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
@@ -223,11 +195,8 @@ const AlbumHero = ({
                       <div
                         className="mt-3 h-1.5 bg-white/10 cursor-pointer relative"
                         onClick={(e) => {
-                          const audio = audioRef.current;
-                          if (!audio || !audio.duration) return;
                           const rect = e.currentTarget.getBoundingClientRect();
-                          const ratio = (e.clientX - rect.left) / rect.width;
-                          audio.currentTime = ratio * audio.duration;
+                          onSeek((e.clientX - rect.left) / rect.width);
                         }}
                       >
                         <div
@@ -294,11 +263,8 @@ const AlbumHero = ({
                         <div
                           className="h-1.5 bg-white/10 cursor-pointer relative"
                           onClick={(e) => {
-                            const audio = audioRef.current;
-                            if (!audio || !audio.duration) return;
                             const rect = e.currentTarget.getBoundingClientRect();
-                            const ratio = (e.clientX - rect.left) / rect.width;
-                            audio.currentTime = ratio * audio.duration;
+                            onSeek((e.clientX - rect.left) / rect.width);
                           }}
                         >
                           <div
@@ -307,7 +273,6 @@ const AlbumHero = ({
                           />
                         </div>
                         <div className="flex justify-between mt-1 text-xs text-muted-foreground font-mono">
-                          <span>{formatTime((audioRef.current?.currentTime) || 0)}</span>
                           <span>{currentTrackData?.duration}</span>
                         </div>
                       </div>

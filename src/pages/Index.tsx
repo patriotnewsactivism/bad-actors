@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import AlbumHero from "@/components/AlbumHero";
 import TrackList from "@/components/TrackList";
 import StoriesSection from "@/components/StoriesSection";
@@ -6,6 +6,7 @@ import UpcomingAlbums from "@/components/UpcomingAlbums";
 import EmailCapture from "@/components/EmailCapture";
 import InlineEmailCapture from "@/components/InlineEmailCapture";
 import StickyDownloadBar from "@/components/StickyDownloadBar";
+import MiniPlayer from "@/components/MiniPlayer";
 import FooterEmailForm from "@/components/FooterEmailForm";
 import { emailService } from "@/lib/emailService";
 import { useSubscriberCount } from "@/hooks/use-subscriber-count";
@@ -17,6 +18,11 @@ const TIMED_POPUP_SESSION_KEY = "timed_popup_shown";
 
 const Index = () => {
   const [currentTrack, setCurrentTrack] = useState<number>(1);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [showMiniPlayer, setShowMiniPlayer] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const heroSentinelRef = useRef<HTMLDivElement | null>(null);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [emailSource, setEmailSource] = useState<string>('hero');
   const subscriberCount = useSubscriberCount();
@@ -45,6 +51,50 @@ const Index = () => {
       }
     }
   }, []);
+
+  // Load the active track's audio source into the single shared <audio> element
+  // whenever the selected track changes, so the hero player and the mini player
+  // that follows on scroll always control the exact same playback state.
+  useEffect(() => {
+    const audio = audioRef.current;
+    const track = tracks.find((t) => t.number === currentTrack);
+    if (!audio || !track?.audioSrc) return;
+    if (audio.src.endsWith(track.audioSrc)) return;
+    audio.src = track.audioSrc;
+    setProgress(0);
+    if (isPlaying) {
+      audio.play().catch(() => setIsPlaying(false));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTrack]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) {
+      audio.play().catch(() => setIsPlaying(false));
+    } else {
+      audio.pause();
+    }
+  }, [isPlaying]);
+
+  // Show the persistent mini player once the main hero player has scrolled out of view.
+  useEffect(() => {
+    const sentinel = heroSentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowMiniPlayer(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
+
+  const seekTo = (ratio: number) => {
+    const audio = audioRef.current;
+    if (!audio || !audio.duration) return;
+    audio.currentTime = ratio * audio.duration;
+  };
 
   // Timed popup: show after 20 seconds if user hasn't subscribed
   useEffect(() => {
@@ -290,6 +340,15 @@ This track chronicles the beginning of the Osteen investigation—where the firs
         </div>
       </section>
 
+      <audio
+        ref={audioRef}
+        onEnded={() => setIsPlaying(false)}
+        onTimeUpdate={(e) => {
+          const el = e.currentTarget;
+          setProgress(el.duration ? el.currentTime / el.duration : 0);
+        }}
+      />
+
       <AlbumHero
         title="Bad Actors - Volume 1"
         artist="Don Matthews"
@@ -299,6 +358,23 @@ This track chronicles the beginning of the Osteen investigation—where the firs
         tracks={tracks}
         streamingLinks={streamingLinks}
         onDownloadClick={() => openDownloadModal('hero')}
+        isPlaying={isPlaying}
+        setIsPlaying={setIsPlaying}
+        progress={progress}
+        onSeek={seekTo}
+      />
+
+      <div ref={heroSentinelRef} />
+
+      <MiniPlayer
+        visible={showMiniPlayer}
+        track={tracks.find((t) => t.number === currentTrack)}
+        tracks={tracks}
+        isPlaying={isPlaying}
+        onTogglePlay={() => setIsPlaying(!isPlaying)}
+        onSelectTrack={setCurrentTrack}
+        progress={progress}
+        onSeek={seekTo}
       />
 
       <div className="container mx-auto px-4 py-8 sm:py-12">
