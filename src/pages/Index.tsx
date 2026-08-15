@@ -13,6 +13,7 @@ import { useSubscriberCount } from "@/hooks/use-subscriber-count";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { tracks } from "@/data/tracks";
+import SingleReleasePromo from "@/components/SingleReleasePromo";
 
 const TIMED_POPUP_SESSION_KEY = "timed_popup_shown";
 
@@ -332,6 +333,14 @@ This track chronicles the beginning of the Osteen investigation—where the firs
           </div>
         </div>
       </section>
+
+      <SingleReleasePromo
+        trackSlug="happy-fuck-the-cops-day"
+        title="Happy Fuck The Cops Day"
+        audioSrc="/audio/happy-fuck-the-cops-day.mp3"
+        countEndpoint="/api/single-download-count"
+        claimEndpoint="/api/single-download"
+      />
 
       <audio
         ref={audioRef}
