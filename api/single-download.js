@@ -16,6 +16,24 @@ const NOTIFY_EMAIL = "don@donmatthews.live";
 const FROM = "Bad Actors <downloads@donmatthews.live>";
 const CAP = 100;
 
+async function forwardLeadToBuildMyBot(email, source, name) {
+  const secret = process.env.PORTFOLIO_INTAKE_SECRET;
+  if (!secret) return;
+  try {
+    await fetch(
+      process.env.BUILDMYBOT_INTAKE_URL || "https://www.buildmybot.app/api/leads/capture",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-portfolio-secret": secret },
+        body: JSON.stringify({ portfolio: true, email, name: name || "", source }),
+        signal: AbortSignal.timeout(8000),
+      }
+    );
+  } catch (err) {
+    console.error("[BuildMyBot forward] error:", err.message);
+  }
+}
+
 async function sendResend(apiKey, to, subject, html) {
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -107,6 +125,8 @@ export default async function handler(req, res) {
     if (!result.claimed) {
       return res.status(200).json({ success: false, soldOut: true, remaining: 0 });
     }
+
+    void forwardLeadToBuildMyBot(cleanEmail, "badactors.online/" + trackSlug, name);
 
     if (resendKey) {
       void upsertResendAudience(cleanEmail, name);
