@@ -2,6 +2,24 @@ const ZIP_URL = "https://badactors.online/bad-actors-volume-1.zip";
 const NOTIFY_EMAIL = "don@donmatthews.live";
 const FROM = "Bad Actors <downloads@donmatthews.live>";
 
+async function forwardLeadToBuildMyBot(email, source, name) {
+  const secret = process.env.PORTFOLIO_INTAKE_SECRET;
+  if (!secret) return;
+  try {
+    await fetch(
+      process.env.BUILDMYBOT_INTAKE_URL || "https://www.buildmybot.app/api/leads/capture",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-portfolio-secret": secret },
+        body: JSON.stringify({ portfolio: true, email, name: name || "", source }),
+        signal: AbortSignal.timeout(8000),
+      }
+    );
+  } catch (err) {
+    console.error("[BuildMyBot forward] error:", err.message);
+  }
+}
+
 async function sendResend(apiKey, to, subject, html) {
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -76,6 +94,7 @@ export default async function handler(req, res) {
           `<p>${cleanEmail}${name ? ` (${name})` : ""} just downloaded Bad Actors - Volume 1 from badactors.online (source: ${source || 'website'}).</p>`
         );
       }
+      void forwardLeadToBuildMyBot(cleanEmail, source || "badactors.online/subscribe", name);
       return res.status(200).json({ success: true, duplicate: false, downloadUrl: ZIP_URL });
     }
 
