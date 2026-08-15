@@ -29,6 +29,30 @@ async function sendResend(apiKey, to, subject, html) {
   }
 }
 
+const RESEND_AUDIENCE_ID = "84a4fdbe-9ac9-46bd-94b0-f6364742f44d";
+
+// Upserts the contact into our one Resend audience so we always have a
+// remarketable list going forward -- the earlier album-subscriber list was
+// lost when its Supabase project got deleted, because nothing was ever
+// mirrored into an audience. This closes that gap for every future signup.
+async function upsertResendAudience(email, firstName) {
+  const audienceKey = process.env.RESEND_AUDIENCE_API_KEY;
+  if (!audienceKey) return;
+  try {
+    const res = await fetch(`https://api.resend.com/audiences/${RESEND_AUDIENCE_ID}/contacts`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${audienceKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ email, first_name: firstName || undefined, unsubscribed: false }),
+    });
+    // Resend 409s on an email already in the audience -- that's fine, not an error.
+    if (!res.ok && res.status !== 409) {
+      console.error("[Resend audience] upsert failed:", await res.text());
+    }
+  } catch (err) {
+    console.error("[Resend audience] upsert error:", err.message);
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -85,6 +109,7 @@ export default async function handler(req, res) {
     }
 
     if (resendKey) {
+      void upsertResendAudience(cleanEmail, name);
       void sendResend(
         resendKey,
         cleanEmail,

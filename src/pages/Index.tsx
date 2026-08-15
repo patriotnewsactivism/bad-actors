@@ -340,6 +340,8 @@ This track chronicles the beginning of the Osteen investigation—where the firs
         audioSrc="/audio/happy-fuck-the-cops-day.mp3"
         countEndpoint="/api/single-download-count"
         claimEndpoint="/api/single-download"
+        checkoutEndpoint="/api/single-checkout"
+        checkoutVerifyEndpoint="/api/single-checkout-verify"
       />
 
       <audio

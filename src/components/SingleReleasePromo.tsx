@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Play, Pause, Download, Loader2, CheckCircle, Flame } from "lucide-react";
+import { Play, Pause, Download, Loader2, CheckCircle, Flame, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -9,7 +9,10 @@ interface SingleReleasePromoProps {
   audioSrc: string;
   countEndpoint: string;
   claimEndpoint: string;
+  checkoutEndpoint: string;
+  checkoutVerifyEndpoint: string;
   cap?: number;
+  price?: string;
 }
 
 const SingleReleasePromo = ({
@@ -18,16 +21,20 @@ const SingleReleasePromo = ({
   audioSrc,
   countEndpoint,
   claimEndpoint,
+  checkoutEndpoint,
+  checkoutVerifyEndpoint,
   cap = 100,
+  price = "$1.99",
 }: SingleReleasePromoProps) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [remaining, setRemaining] = useState<number | null>(null);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error" | "checking-out">("idle");
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [alreadyClaimed, setAlreadyClaimed] = useState(false);
+  const [isPaidPurchase, setIsPaidPurchase] = useState(false);
 
   useEffect(() => {
     fetch(`${countEndpoint}?track=${trackSlug}`)
@@ -36,7 +43,26 @@ const SingleReleasePromo = ({
         if (typeof d.remaining === "number") setRemaining(d.remaining);
       })
       .catch(() => {});
-  }, [countEndpoint, trackSlug]);
+
+    // Returning from Stripe Checkout? Verify server-side before showing anything.
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("single_checkout_session_id");
+    if (sessionId) {
+      setStatus("loading");
+      fetch(`${checkoutVerifyEndpoint}?session_id=${sessionId}`)
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.paid && d.downloadUrl) {
+            setDownloadUrl(d.downloadUrl);
+            setIsPaidPurchase(true);
+            setStatus("success");
+          } else {
+            setStatus("idle");
+          }
+        })
+        .catch(() => setStatus("idle"));
+    }
+  }, [countEndpoint, checkoutVerifyEndpoint, trackSlug]);
 
   const togglePlay = () => {
     const audio = audioRef.current;
@@ -50,7 +76,7 @@ const SingleReleasePromo = ({
 
   const soldOut = remaining !== null && remaining <= 0;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleFreeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || soldOut) return;
     setStatus("loading");
@@ -63,14 +89,31 @@ const SingleReleasePromo = ({
       const data = await res.json();
       if (data.soldOut) {
         setRemaining(0);
-        setStatus("error");
+        setStatus("idle");
         return;
       }
       if (!res.ok || !data.success) throw new Error(data.error || "Failed");
       setDownloadUrl(data.downloadUrl);
       setAlreadyClaimed(!!data.alreadyClaimed);
+      setIsPaidPurchase(false);
       if (typeof data.remaining === "number") setRemaining(data.remaining);
       setStatus("success");
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  const handleBuyClick = async () => {
+    setStatus("checking-out");
+    try {
+      const res = await fetch(checkoutEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email || undefined, track: trackSlug }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || "Failed");
+      window.location.href = data.url;
     } catch {
       setStatus("error");
     }
@@ -93,7 +136,7 @@ const SingleReleasePromo = ({
           {title}
         </h2>
         <p className="text-police-red font-bold uppercase tracking-widest text-center text-sm mb-8">
-          Free Digital Download — First {cap} Only
+          {price} Digital Download — First {cap} Free
         </p>
 
         <audio
@@ -124,7 +167,7 @@ const SingleReleasePromo = ({
               <p className="text-zinc-500 text-xs uppercase tracking-widest">Checking availability&hellip;</p>
             ) : soldOut ? (
               <p className="text-police-red font-black uppercase tracking-widest text-sm">
-                All {cap} free downloads claimed
+                All {cap} free downloads claimed — now {price}
               </p>
             ) : (
               <p className="text-crime-yellow font-bold uppercase tracking-widest text-sm">
@@ -137,7 +180,11 @@ const SingleReleasePromo = ({
             <div className="flex flex-col items-center gap-4 py-4">
               <CheckCircle className="w-12 h-12 text-crime-yellow" />
               <p className="text-white font-bold uppercase tracking-wide text-center">
-                {alreadyClaimed ? "Here's your download again" : "You're in — check your email"}
+                {isPaidPurchase
+                  ? "Thanks for your purchase — check your email"
+                  : alreadyClaimed
+                  ? "Here's your download again"
+                  : "You're in — check your email"}
               </p>
               {downloadUrl && (
                 <a
@@ -150,18 +197,37 @@ const SingleReleasePromo = ({
               )}
             </div>
           ) : soldOut ? (
-            <div className="text-center py-2">
-              <a
-                href="https://www.bandlab.com/badactors"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block px-6 py-3 bg-black border-2 border-crime-yellow text-crime-yellow font-bold uppercase tracking-wide hover:bg-crime-yellow hover:text-black transition-all"
+            <div className="space-y-3">
+              <Input
+                type="email"
+                placeholder="your@email.com (for your receipt)"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-black border-2 border-police-red text-white placeholder:text-muted-foreground focus-visible:ring-police-red focus-visible:border-crime-yellow"
+              />
+              <Button
+                onClick={handleBuyClick}
+                disabled={status === "checking-out" || status === "loading"}
+                className="w-full bg-crime-yellow text-black font-bold uppercase tracking-wide hover:bg-crime-yellow/90 border-2 border-crime-yellow disabled:opacity-50"
               >
-                Stream It Instead
-              </a>
+                {status === "checking-out" ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" /> Redirecting to checkout&hellip;
+                  </>
+                ) : (
+                  <>
+                    <CreditCard className="w-5 h-5" /> Buy for {price}
+                  </>
+                )}
+              </Button>
+              {status === "error" && (
+                <p className="text-police-red text-xs font-bold uppercase text-center">
+                  Something went wrong. Please try again.
+                </p>
+              )}
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleFreeSubmit} className="space-y-3">
               <Input
                 type="email"
                 required
@@ -192,13 +258,13 @@ const SingleReleasePromo = ({
                   </>
                 )}
               </Button>
-              {status === "error" && !soldOut && (
+              {status === "error" && (
                 <p className="text-police-red text-xs font-bold uppercase text-center">
                   Something went wrong. Please try again.
                 </p>
               )}
               <p className="text-muted-foreground text-xs text-center uppercase tracking-wide">
-                We respect your privacy. No spam, ever.
+                We respect your privacy. No spam, ever. {price} after the first {cap} claims.
               </p>
             </form>
           )}
