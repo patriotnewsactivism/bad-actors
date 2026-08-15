@@ -13,6 +13,7 @@ interface SingleReleasePromoProps {
   checkoutVerifyEndpoint: string;
   cap?: number;
   price?: string;
+  coverImage?: string;
 }
 
 const SingleReleasePromo = ({
@@ -25,6 +26,7 @@ const SingleReleasePromo = ({
   checkoutVerifyEndpoint,
   cap = 100,
   price = "$1.99",
+  coverImage,
 }: SingleReleasePromoProps) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -138,6 +140,17 @@ const SingleReleasePromo = ({
         <p className="text-police-red font-bold uppercase tracking-widest text-center text-sm mb-8">
           {price} Digital Download — First {cap} Free
         </p>
+
+        {coverImage && (
+          <div className="max-w-sm mx-auto mb-8 border-2 border-crime-yellow/60 shadow-2xl">
+            <img
+              src={coverImage}
+              alt={`${title} — free download, first ${cap} only`}
+              className="w-full aspect-square object-cover"
+              loading="eager"
+            />
+          </div>
+        )}
 
         <audio
           ref={audioRef}
