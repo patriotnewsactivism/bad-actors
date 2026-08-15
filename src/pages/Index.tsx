@@ -292,6 +292,17 @@ This track chronicles the beginning of the Osteen investigation—where the firs
         Now Streaming on all platforms • Deploying to badactors.online
       </div>
 
+      <SingleReleasePromo
+        trackSlug="happy-fuck-the-cops-day"
+        title="Happy Fuck The Cops Day"
+        audioSrc="/audio/happy-fuck-the-cops-day.mp3"
+        coverImage="/images/happy-fuck-the-cops-day-cover.jpg"
+        countEndpoint="/api/single-download-count"
+        claimEndpoint="/api/single-download"
+        checkoutEndpoint="/api/single-checkout"
+        checkoutVerifyEndpoint="/api/single-checkout-verify"
+      />
+
       {/* Tour Headline Section */}
       <section className="relative w-full bg-zinc-950 py-12 sm:py-20 border-b-4 border-police-red flex flex-col items-center justify-center overflow-hidden">
         {/* Background glow effects */}
@@ -333,16 +344,6 @@ This track chronicles the beginning of the Osteen investigation—where the firs
           </div>
         </div>
       </section>
-
-      <SingleReleasePromo
-        trackSlug="happy-fuck-the-cops-day"
-        title="Happy Fuck The Cops Day"
-        audioSrc="/audio/happy-fuck-the-cops-day.mp3"
-        countEndpoint="/api/single-download-count"
-        claimEndpoint="/api/single-download"
-        checkoutEndpoint="/api/single-checkout"
-        checkoutVerifyEndpoint="/api/single-checkout-verify"
-      />
 
       <audio
         ref={audioRef}
