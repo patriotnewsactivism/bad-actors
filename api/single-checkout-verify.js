@@ -25,6 +25,25 @@ async function sendResend(apiKey, to, subject, html) {
   }
 }
 
+const RESEND_AUDIENCE_ID = "84a4fdbe-9ac9-46bd-94b0-f6364742f44d";
+
+async function upsertResendAudience(email) {
+  const audienceKey = process.env.RESEND_AUDIENCE_API_KEY;
+  if (!audienceKey) return;
+  try {
+    const res = await fetch(`https://api.resend.com/audiences/${RESEND_AUDIENCE_ID}/contacts`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${audienceKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ email, unsubscribed: false }),
+    });
+    if (!res.ok && res.status !== 409) {
+      console.error("[Resend audience] upsert failed:", await res.text());
+    }
+  } catch (err) {
+    console.error("[Resend audience] upsert error:", err.message);
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
@@ -82,6 +101,7 @@ export default async function handler(req, res) {
     if (isFirstDelivery) {
       const resendKey = process.env.RESEND_API_KEY;
       if (resendKey && email) {
+        void upsertResendAudience(email);
         void sendResend(
           resendKey,
           email,
