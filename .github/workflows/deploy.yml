@@ -7,40 +7,162 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
-  group: deploy-${{ github.ref }}
+  group: bad-actors-production
   cancel-in-progress: false
 
+env:
+  GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID || secrets.GCP_PROJECT_ID }}
+  GCP_CLOUD_RUN_REGION: ${{ vars.GCP_CLOUD_RUN_REGION || secrets.GCP_CLOUD_RUN_REGION }}
+  GCP_CLOUD_RUN_SERVICE: ${{ vars.GCP_CLOUD_RUN_SERVICE || secrets.GCP_CLOUD_RUN_SERVICE }}
+  GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER || secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+  GCP_SERVICE_ACCOUNT: ${{ vars.GCP_SERVICE_ACCOUNT || secrets.GCP_SERVICE_ACCOUNT }}
+  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+
 jobs:
-  deploy:
+  quality:
+    name: Build and lint
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-
-      - id: auth
-        uses: google-github-actions/auth@v2
+      - uses: actions/setup-node@v4
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+  deploy:
+    name: Deploy existing Cloud Run service
+    needs: quality
+    if: vars.GCP_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate deployment configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in GCP_PROJECT_ID GCP_CLOUD_RUN_REGION GCP_CLOUD_RUN_SERVICE; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "Missing required deployment setting: $name" >&2
+              exit 2
+            fi
+          done
+          if [[ -n "$GCP_WORKLOAD_IDENTITY_PROVIDER" || -n "$GCP_SERVICE_ACCOUNT" ]]; then
+            if [[ -z "$GCP_WORKLOAD_IDENTITY_PROVIDER" || -z "$GCP_SERVICE_ACCOUNT" ]]; then
+              echo "Workload Identity requires both GCP_WORKLOAD_IDENTITY_PROVIDER and GCP_SERVICE_ACCOUNT." >&2
+              exit 2
+            fi
+          elif [[ -z "$GCP_SA_KEY" ]]; then
+            echo "No Google authentication configured. Prefer Workload Identity; GCP_SA_KEY is legacy fallback only." >&2
+            exit 2
+          fi
+
+      - name: Authenticate with Google Workload Identity
+        if: env.GCP_WORKLOAD_IDENTITY_PROVIDER != '' && env.GCP_SERVICE_ACCOUNT != ''
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
+
+      - name: Authenticate with legacy service-account JSON
+        if: env.GCP_WORKLOAD_IDENTITY_PROVIDER == '' && env.GCP_SERVICE_ACCOUNT == '' && env.GCP_SA_KEY != ''
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ env.GCP_SA_KEY }}
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
+        uses: google-github-actions/setup-gcloud@v3
 
-      - name: Configure Docker auth
-        run: gcloud auth configure-docker --quiet
-
-      - name: Build and push image
+      - name: Verify exact existing target and derive image repository
+        id: target
+        shell: bash
         run: |
-          gcloud builds submit .             --project ${{ secrets.GCP_PROJECT_ID }}             --tag us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-run-source-deploy/${{ secrets.GCP_CLOUD_RUN_SERVICE }}:latest             --timeout=900
+          set -euo pipefail
+          service_json="$(gcloud run services describe "$GCP_CLOUD_RUN_SERVICE" \
+            --project "$GCP_PROJECT_ID" \
+            --region "$GCP_CLOUD_RUN_REGION" \
+            --platform managed \
+            --format=json)"
 
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy ${{ secrets.GCP_CLOUD_RUN_SERVICE }}             --project ${{ secrets.GCP_PROJECT_ID }}             --region ${{ secrets.GCP_CLOUD_RUN_REGION }}             --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-run-source-deploy/${{ secrets.GCP_CLOUD_RUN_SERVICE }}:latest             --allow-unauthenticated             --quiet
+          current_image="$(jq -r '.spec.template.spec.containers[0].image // empty' <<<"$service_json")"
+          if [[ -z "$current_image" ]]; then
+            echo "Existing Cloud Run service has no readable container image." >&2
+            exit 3
+          fi
 
-      - name: Verify deployment
+          image_repo="${current_image%@*}"
+          if [[ "$image_repo" == "$current_image" ]]; then
+            image_repo="${current_image%:*}"
+          fi
+          if [[ -z "$image_repo" || "$image_repo" != *"/"* ]]; then
+            echo "Could not derive a safe image repository from the existing service image." >&2
+            exit 3
+          fi
+
+          image="${image_repo}:${GITHUB_SHA}"
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+          echo "Verified existing target: $GCP_PROJECT_ID / $GCP_CLOUD_RUN_REGION / $GCP_CLOUD_RUN_SERVICE"
+          echo "Release image: $image"
+
+      - name: Build immutable image with Cloud Build
+        shell: bash
         run: |
-          sleep 10
-          SERVICE_URL=$(gcloud run services describe ${{ secrets.GCP_CLOUD_RUN_SERVICE }}             --project ${{ secrets.GCP_PROJECT_ID }}             --region ${{ secrets.GCP_CLOUD_RUN_REGION }}             --format='value(status.url)')
-          echo "Service URL: $SERVICE_URL"
-          curl -s "$SERVICE_URL" | head -5 || echo "Site check failed"
+          set -euo pipefail
+          gcloud builds submit . \
+            --project "$GCP_PROJECT_ID" \
+            --tag "${{ steps.target.outputs.image }}" \
+            --timeout=900
+
+      - name: Update only the existing Cloud Run service
+        shell: bash
+        run: |
+          set -euo pipefail
+          gcloud run services update "$GCP_CLOUD_RUN_SERVICE" \
+            --project "$GCP_PROJECT_ID" \
+            --region "$GCP_CLOUD_RUN_REGION" \
+            --platform managed \
+            --image "${{ steps.target.outputs.image }}" \
+            --update-env-vars "BAD_ACTORS_BUILD_SHA=$GITHUB_SHA" \
+            --quiet
+
+      - name: Verify Ready revision and live build SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in {1..30}; do
+            service_json="$(gcloud run services describe "$GCP_CLOUD_RUN_SERVICE" \
+              --project "$GCP_PROJECT_ID" \
+              --region "$GCP_CLOUD_RUN_REGION" \
+              --platform managed \
+              --format=json)"
+            created="$(jq -r '.status.latestCreatedRevisionName // empty' <<<"$service_json")"
+            ready="$(jq -r '.status.latestReadyRevisionName // empty' <<<"$service_json")"
+            if [[ -n "$created" && "$created" == "$ready" ]]; then
+              break
+            fi
+            sleep 5
+          done
+
+          service_url="$(gcloud run services describe "$GCP_CLOUD_RUN_SERVICE" \
+            --project "$GCP_PROJECT_ID" \
+            --region "$GCP_CLOUD_RUN_REGION" \
+            --platform managed \
+            --format='value(status.url)')"
+          body="$(curl -fsS --retry 5 --retry-delay 3 --max-time 20 "${service_url%/}/health")"
+          live_sha="$(jq -r '.build.sha // empty' <<<"$body")"
+          if [[ "$live_sha" != "$GITHUB_SHA" ]]; then
+            echo "Live SHA mismatch. expected=$GITHUB_SHA actual=$live_sha" >&2
+            exit 4
+          fi
+          echo "Cloud Run release verified at $service_url with SHA $live_sha"
