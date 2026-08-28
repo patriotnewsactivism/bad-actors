@@ -1,73 +1,77 @@
-# Welcome to your Lovable project
+# Bad Actors
 
-## Project info
+Official web experience for **Bad Actors** by Don Matthews: music playback, evidence/story pages, subscriber/download flows, and release promotion.
 
-**URL**: https://lovable.dev/projects/b2f26ed0-d020-4de2-aa9a-ec23f22cfad8
+## Stack
 
-## How can I edit this code?
+- Vite + React + TypeScript
+- Tailwind CSS + shadcn/ui
+- Node HTTP server for Cloud Run (`server.mjs`), including Vercel-handler compatibility for the existing API modules
+- Docker image built through Google Cloud Build
 
-There are several ways of editing your application.
+## Local development
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/b2f26ed0-d020-4de2-aa9a-ec23f22cfad8) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+npm ci
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Production-quality checks:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+npm run lint
+npm run build
+```
 
-**Use GitHub Codespaces**
+The independent `.github/workflows/ci.yml` workflow runs those checks for pull requests and pushes.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Production deployment
 
-## What technologies are used for this project?
+The repository is prepared for deployment to **Google Cloud Run** through `.github/workflows/deploy.yml`.
 
-This project is built with:
+The deployment workflow is deliberately fail-closed:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- code must pass lint/build before a release;
+- deployment runs only when repository variable `GCP_DEPLOY_ENABLED` is exactly `true`;
+- Google Workload Identity Federation is preferred;
+- a legacy `GCP_SA_KEY` JSON secret is supported only as a migration fallback;
+- the configured Cloud Run service must already exist;
+- the workflow reads that existing service before building;
+- images are tagged with the full Git commit SHA rather than `latest`;
+- release uses `gcloud run services update`, so it cannot silently create a substitute service;
+- `/health` must report the exact deployed commit SHA before the workflow succeeds.
 
-## How can I deploy this project?
+Required non-secret deployment settings should normally be repository/environment variables:
 
-Simply open [Lovable](https://lovable.dev/projects/b2f26ed0-d020-4de2-aa9a-ec23f22cfad8) and click on Share -> Publish.
+```text
+GCP_DEPLOY_ENABLED=true
+GCP_PROJECT_ID=<existing Google Cloud project>
+GCP_CLOUD_RUN_REGION=<existing service region>
+GCP_CLOUD_RUN_SERVICE=<existing service name>
+GCP_WORKLOAD_IDENTITY_PROVIDER=<GitHub WIF provider resource>
+GCP_SERVICE_ACCOUNT=<deploy service-account email>
+```
 
-## Can I connect a custom domain to my Lovable project?
+If Workload Identity is not yet configured, `GCP_SA_KEY` may be used temporarily as a GitHub secret. Do not commit credential JSON to this repository.
 
-Yes, you can!
+## Release verification
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+The server exposes `GET /health` and returns the release provenance:
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```json
+{
+  "status": "ok",
+  "build": { "sha": "<git sha>" },
+  "service": "bad-actors"
+}
+```
+
+A green Cloud Build or Ready Cloud Run revision is not enough by itself; the deployment workflow verifies that the running service reports the exact release SHA.
+
+## Domains
+
+Domain/DNS ownership is external to this repository. A domain pointing at an older or paused host does not prove that the current Cloud Run release failed. Verify the configured Cloud Run custom-domain mapping and DNS independently when moving production traffic.
+
+## Editing with Lovable
+
+The original Lovable project remains useful as an editing surface. Changes made there may commit back to this repository, but **Lovable publishing is not the canonical production release path once Cloud Run is enabled**. GitHub `main`, CI, and the Cloud Run deploy workflow are the release source of truth.
