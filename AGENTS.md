@@ -1,24 +1,61 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
-Source lives in `src/`: `pages/` hosts router targets (Index, NotFound) and should only orchestrate feature modules. Reusable UI plus shadcn primitives stay in `components/` (`components/ui` mirrors the generated library), cross-cutting hooks in `hooks/`, and utilities under `lib/`. Static assets and HTML shells belong in `public/`; `dist/` stores build artifacts. Use the `@/` alias from `tsconfig.json` whenever referencing files in `src/` to avoid brittle relative paths.
+## Canonical production contract
 
-## Build, Test, and Development Commands
-- `npm install` – install dependencies; rerun after touching `components.json`.
-- `npm run dev` – launch Vite with hot reload at `localhost:5173`.
-- `npm run build` – produce the optimized bundle in `dist/` for Lovable deploys.
-- `npm run build:dev` – emit a debuggable bundle that keeps sourcemaps readable.
-- `npm run preview` – serve the last build locally to smoke-test production behavior.
-- `npm run lint` – execute ESLint across the repo; fix violations before pushing.
+This repository's intended production release path is **Google Cloud Run** through `.github/workflows/deploy.yml` once `GCP_DEPLOY_ENABLED=true` is deliberately configured.
 
-## Coding Style & Naming Conventions
-Code is TypeScript-first with React function components. Follow the 2-space indentation in `src/App.tsx`, keep exports typed, and prefer `const` declarations for components. Components and pages use `PascalCase`, hooks are prefixed with `use`, and utilities stay `camelCase`. Tailwind classes live inline inside JSX; if you need extra styles, co-locate them with the feature. Run `npm run lint` to apply the ESLint config (TypeScript, React Hooks, Refresh). Format with your editor defaults but never bypass ESLint's findings.
+Do not silently replace that path with Lovable, Vercel, Netlify, Railway, or another host because an old deployment or domain still exists. Old hosting can remain during migration, but it is not authority for new release automation.
 
-## Testing Guidelines
-Automated tests are absent right now; new work should introduce Vitest plus React Testing Library (Vite-native). Place specs beside the unit they cover or under `src/__tests__/`, name them `<Component>.test.tsx`, and describe behaviors (`it("shows empty state on 404")`). Keep tests deterministic, mock network access through the shared QueryClient, and target coverage on shared hooks, data mappers, and high-impact pages.
+Production deployment is existing-service-only by default:
 
-## Commit & Pull Request Guidelines
-Recent commits are short present-tense statements (`Update Index.tsx`, `Fix track list titles 9-16`). Keep that tone but add meaningful scope tags: `[scope]: imperative summary` (for example `ui: add artist radar chart`). Pull requests should include a crisp problem/solution summary, screenshots or GIFs for UI work, linked Lovable or GitHub issues, the list of checks you ran (`npm run lint`, manual flows), and notes on migrations or env vars. Wait for green checks and one review before merging.
+- never guess the Google Cloud project, region, or service name;
+- require the exact configured existing service to be readable before building or updating it;
+- prefer GitHub Workload Identity Federation over long-lived service-account keys;
+- never commit credential JSON, API keys, tokens, or private keys;
+- use immutable commit-SHA image tags;
+- update the existing Cloud Run service rather than creating a substitute;
+- verify `/health.build.sha` equals the release commit after deployment;
+- do not claim a release is live based only on a successful build or Ready revision.
 
-## Security & Configuration Tips
-Keep secrets in untracked `.env.local` files and access them via `import.meta.env`. Tailwind and shadcn tokens live in `tailwind.config.ts` and `components.json`; regenerate UI via `npx shadcn@latest add <component>` rather than editing generated files under `components/ui`. Strip debugging logs before release builds so the shipped bundle stays small.
+If production has not yet been bootstrapped on Cloud Run, treat service creation/domain migration as a separate explicit infrastructure change rather than weakening the normal deployment workflow.
+
+## Project structure
+
+Source lives in `src/`: `pages/` hosts router targets and should mainly orchestrate feature modules. Reusable UI and shadcn primitives stay in `components/` (`components/ui` mirrors the generated library), cross-cutting hooks in `hooks/`, and utilities under `lib/`. Static assets and HTML shells belong in `public/`; `dist/` is generated build output. Use the `@/` alias from `tsconfig.json` for source imports.
+
+`server.mjs` is the production Node entry point used by the Docker image. It also adapts the existing Vercel-style API handlers to Node's HTTP server. Preserve that compatibility when changing routing. Keep `/health` lightweight, unauthenticated, non-secret, and stable enough for deployment verification.
+
+## Build, test, and development commands
+
+- `npm ci` â€” install the locked dependency set.
+- `npm run dev` â€” launch Vite locally.
+- `npm run build` â€” create the optimized production bundle.
+- `npm run build:dev` â€” development-mode bundle.
+- `npm run preview` â€” serve the Vite build locally.
+- `npm run lint` â€” run ESLint.
+
+Before merging runtime or deployment work, `npm run lint` and `npm run build` must pass. `.github/workflows/ci.yml` is the independent quality gate; do not make basic validation depend on production deployment credentials.
+
+## Coding style
+
+Use TypeScript-first React function components. Follow existing two-space indentation, keep exports typed, prefer `const`, use `PascalCase` for components/pages, `use*` for hooks, and `camelCase` for utilities. Tailwind classes stay inline unless a feature genuinely needs co-located styles.
+
+## Tests
+
+Automated component coverage is still limited. New high-impact logic should add deterministic tests with Vitest/React Testing Library when practical. Network behavior should be mocked at shared boundaries. Do not use production deployment as a substitute for tests.
+
+## Git and change control
+
+Normal work should use a feature branch and pull request. Keep commits scoped and present-tense. PRs should state the problem, solution, validation performed, configuration changes, and any deployment/domain implications.
+
+Deployment changes deserve extra scrutiny because a syntactically valid workflow can still target the wrong project or create unintended infrastructure. Preserve fail-closed preflight checks.
+
+## Secrets and configuration
+
+Client-side values accessed through `import.meta.env` are bundled into browser code; never put server secrets there. Server/runtime secrets belong in the deployment platform or secret manager. GitHub Actions should reference secret/variable names only and must not print values.
+
+Current deployment settings are documented in `README.md`. Workload Identity is preferred. `GCP_SA_KEY` is legacy fallback only and should be removed after WIF is working.
+
+## Domain migration
+
+`music.donmatthews.live` and `badactors.online` may temporarily point at different hosting platforms during migration. DNS/custom-domain changes are infrastructure operations outside application source. Verify the actual live hostname after every cutover; never infer it from repository metadata or old provider files.
