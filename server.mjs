@@ -6,11 +6,13 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 8080;
 const DIST = path.join(__dirname, 'dist');
+const BUILD_SHA = process.env.BAD_ACTORS_BUILD_SHA || 'unknown';
 
 const MIME = {
   '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript',
   '.css': 'text/css', '.json': 'application/json', '.png': 'image/png',
-  '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.ico': 'image/x-icon',
+  '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.avif': 'image/avif',
+  '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.mp3': 'audio/mpeg', '.wav': 'audio/wav',
   '.webmanifest': 'application/manifest+json', '.xml': 'application/xml',
   '.txt': 'text/plain', '.woff': 'font/woff', '.woff2': 'font/woff2',
 };
@@ -35,7 +37,7 @@ if (fs.existsSync(apiDir)) {
 
 function readBody(req) {
   return new Promise((resolve) => {
-    let chunks = [];
+    const chunks = [];
     req.on('data', (c) => chunks.push(c));
     req.on('end', () => {
       const raw = Buffer.concat(chunks).toString('utf8');
@@ -81,6 +83,19 @@ const server = http.createServer(async (rawReq, rawRes) => {
   const url = new URL(rawReq.url, `http://localhost:${PORT}`);
   const pathname = url.pathname;
 
+  if (pathname === '/health') {
+    rawRes.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store',
+    });
+    rawRes.end(JSON.stringify({
+      status: 'ok',
+      build: { sha: BUILD_SHA },
+      service: 'bad-actors',
+    }));
+    return;
+  }
+
   // API routes (Vercel-compatible shim)
   for (const [route, handler] of Object.entries(apiHandlers)) {
     if (pathname === route || pathname.startsWith(route + '/')) {
@@ -105,7 +120,7 @@ const server = http.createServer(async (rawReq, rawRes) => {
   }
 
   // Static file
-  let filePath = path.join(DIST, pathname);
+  const filePath = path.join(DIST, pathname);
   if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
     const ext = path.extname(filePath);
     rawRes.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
@@ -116,13 +131,13 @@ const server = http.createServer(async (rawReq, rawRes) => {
   // SPA fallback to index.html
   const index = path.join(DIST, 'index.html');
   if (fs.existsSync(index)) {
-    rawRes.writeHead(200, { 'Content-Type': 'text/html' });
+    rawRes.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     fs.createReadStream(index).pipe(rawRes);
     return;
   }
 
-  rawRes.writeHead(404);
+  rawRes.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
   rawRes.end('Not found');
 });
 
-server.listen(PORT, () => console.log(`bad-actors serving on :${PORT}`));
+server.listen(PORT, () => console.log(`bad-actors serving on :${PORT} build=${BUILD_SHA}`));
