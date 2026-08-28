@@ -1,0 +1,64 @@
+name: Fix existing lint blockers once
+
+on:
+  push:
+    branches: [ops/harden-cloud-run-pipeline]
+    paths: ['.github/workflows/fix-lint-once.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ops/harden-cloud-run-pipeline
+          fetch-depth: 0
+      - name: Apply targeted lint fixes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          replacements = {
+            'src/components/ui/command.tsx': [
+              ('interface CommandDialogProps extends DialogProps {}', 'type CommandDialogProps = DialogProps;'),
+            ],
+            'src/components/ui/textarea.tsx': [
+              ('export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}', 'export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;'),
+            ],
+            'src/pages/Index.tsx': [
+              ('const emails = storedEmails ? JSON.parse(storedEmails) : [];\n    if (!emails.some((e: any) => e.email === email)) {', 'const emails = (storedEmails ? JSON.parse(storedEmails) : []) as Array<{ email: string; name?: string; source: string; date: string }>;\n    if (!emails.some((e) => e.email === email)) {'),
+            ],
+            'tailwind.config.ts': [
+              ('import type { Config } from "tailwindcss";\n', 'import type { Config } from "tailwindcss";\nimport animate from "tailwindcss-animate";\n'),
+              ('plugins: [require("tailwindcss-animate")],', 'plugins: [animate],'),
+            ],
+          }
+
+          for filename, pairs in replacements.items():
+            path = Path(filename)
+            text = path.read_text()
+            for old, new in pairs:
+              if old not in text:
+                raise SystemExit(f'Expected text not found in {filename}: {old[:80]}')
+              text = text.replace(old, new, 1)
+            path.write_text(text)
+          PY
+          rm .github/workflows/fix-lint-once.yml
+      - name: Validate
+        run: |
+          npm ci
+          npm run lint
+          npm run build
+      - name: Commit fixes
+        shell: bash
+        run: |
+          git config user.name 'Matthew Reardon'
+          git config user.email 'patriotnewsactivism@proton.me'
+          git add -A
+          git diff --cached --check
+          git commit -m 'fix: clear production lint blockers'
+          git push origin HEAD:ops/harden-cloud-run-pipeline
