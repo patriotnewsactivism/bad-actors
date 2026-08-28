@@ -1,5 +1,5 @@
 # Build stage
-FROM public.ecr.aws/docker/library/node:20-alpine AS builder
+FROM mirror.gcr.io/library/node:20-alpine AS builder
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev || npm install
@@ -7,7 +7,7 @@ COPY . .
 RUN npm run build && node prerender.mjs
 
 # Serve stage
-FROM public.ecr.aws/docker/library/node:20-alpine AS runner
+FROM mirror.gcr.io/library/node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=8080
