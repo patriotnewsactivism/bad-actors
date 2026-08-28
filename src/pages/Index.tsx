@@ -149,8 +149,8 @@ const Index = () => {
 
     // localStorage backup
     const storedEmails = localStorage.getItem("captured_emails");
-    const emails = storedEmails ? JSON.parse(storedEmails) : [];
-    if (!emails.some((e: any) => e.email === email)) {
+    const emails = (storedEmails ? JSON.parse(storedEmails) : []) as Array<{ email: string; name?: string; source: string; date: string }>;
+    if (!emails.some((e) => e.email === email)) {
       emails.push({ email, name, source: emailSource, date: new Date().toISOString() });
       localStorage.setItem("captured_emails", JSON.stringify(emails));
     }
