@@ -1,0 +1,24 @@
+[build]
+  command = "npm run build:seo"
+  publish = "dist"
+
+# Keep the Vite/prerendered frontend on Netlify, but send all server-side
+# traffic to the canonical Cloud Run service. This preserves the existing
+# badactors.online hostname while removing the broken static-only /api path.
+[[redirects]]
+  from = "/api/*"
+  to = "https://bad-actors-loaqpsfpqq-uc.a.run.app/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/health"
+  to = "https://bad-actors-loaqpsfpqq-uc.a.run.app/health"
+  status = 200
+  force = true
+
+# SPA fallback for client-side routes not emitted by the prerender step.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
