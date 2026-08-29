@@ -1,0 +1,39 @@
+name: NPM audit diagnostic
+
+on:
+  push:
+    branches: [security/npm-audit-diagnostic]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Production dependency audit
+        shell: bash
+        run: |
+          set +e
+          npm audit --omit=dev --json > prod-audit.json
+          code=$?
+          jq '{metadata:.metadata.vulnerabilities,vulnerabilities:(.vulnerabilities|to_entries|map({name:.key,severity:.value.severity,isDirect:.value.isDirect,via:[.value.via[]? | if type=="string" then . else .title end]}))}' prod-audit.json
+          echo "audit_exit=$code"
+          exit 0
+      - name: Full dependency audit summary
+        shell: bash
+        run: |
+          set +e
+          npm audit --json > full-audit.json
+          code=$?
+          jq '{metadata:.metadata.vulnerabilities,direct:[.vulnerabilities|to_entries[]|select(.value.isDirect)|{name:.key,severity:.value.severity,via:[.value.via[]? | if type=="string" then . else .title end]}]}' full-audit.json
+          echo "audit_exit=$code"
+          exit 0
