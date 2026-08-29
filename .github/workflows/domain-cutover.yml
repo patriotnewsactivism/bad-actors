@@ -1,0 +1,119 @@
+name: Cut over badactors.online to Cloud Run
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/domain-cutover.yml'
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID || secrets.GCP_PROJECT_ID }}
+  GCP_CLOUD_RUN_REGION: ${{ vars.GCP_CLOUD_RUN_REGION || secrets.GCP_CLOUD_RUN_REGION }}
+  GCP_CLOUD_RUN_SERVICE: ${{ vars.GCP_CLOUD_RUN_SERVICE || secrets.GCP_CLOUD_RUN_SERVICE }}
+  GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER || secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+  GCP_SERVICE_ACCOUNT: ${{ vars.GCP_SERVICE_ACCOUNT || secrets.GCP_SERVICE_ACCOUNT }}
+  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+  BAD_ACTORS_DOMAIN: badactors.online
+
+jobs:
+  cutover:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in GCP_PROJECT_ID GCP_CLOUD_RUN_REGION GCP_CLOUD_RUN_SERVICE BAD_ACTORS_DOMAIN; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "Missing required setting: $name" >&2
+              exit 2
+            fi
+          done
+          if [[ -n "$GCP_WORKLOAD_IDENTITY_PROVIDER" || -n "$GCP_SERVICE_ACCOUNT" ]]; then
+            if [[ -z "$GCP_WORKLOAD_IDENTITY_PROVIDER" || -z "$GCP_SERVICE_ACCOUNT" ]]; then
+              echo "Workload Identity requires both provider and service account." >&2
+              exit 2
+            fi
+          elif [[ -z "$GCP_SA_KEY" ]]; then
+            echo "No Google authentication configured." >&2
+            exit 2
+          fi
+
+      - name: Authenticate with Google Workload Identity
+        if: env.GCP_WORKLOAD_IDENTITY_PROVIDER != '' && env.GCP_SERVICE_ACCOUNT != ''
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
+
+      - name: Authenticate with legacy service-account JSON
+        if: env.GCP_WORKLOAD_IDENTITY_PROVIDER == '' && env.GCP_SERVICE_ACCOUNT == '' && env.GCP_SA_KEY != ''
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ env.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Verify Cloud Run service is healthy
+        shell: bash
+        run: |
+          set -euo pipefail
+          service_url="$(gcloud run services describe "$GCP_CLOUD_RUN_SERVICE" \
+            --project "$GCP_PROJECT_ID" \
+            --region "$GCP_CLOUD_RUN_REGION" \
+            --platform managed \
+            --format='value(status.url)')"
+          test -n "$service_url"
+          curl -fsS --retry 5 --retry-delay 2 --max-time 20 "${service_url%/}/health" | tee /tmp/health.json
+          jq -e '.status == "ok" and .service == "bad-actors"' /tmp/health.json >/dev/null
+          echo "Verified healthy Cloud Run origin: $service_url"
+
+      - name: Ensure domain mapping exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gcloud beta run domain-mappings describe \
+            --domain "$BAD_ACTORS_DOMAIN" \
+            --project "$GCP_PROJECT_ID" \
+            --region "$GCP_CLOUD_RUN_REGION" \
+            --platform managed >/tmp/domain.json 2>/tmp/domain.err; then
+            echo "Domain mapping already exists."
+          else
+            cat /tmp/domain.err
+            gcloud beta run domain-mappings create \
+              --service "$GCP_CLOUD_RUN_SERVICE" \
+              --domain "$BAD_ACTORS_DOMAIN" \
+              --project "$GCP_PROJECT_ID" \
+              --region "$GCP_CLOUD_RUN_REGION" \
+              --platform managed
+          fi
+
+      - name: Print required DNS records
+        shell: bash
+        run: |
+          set -euo pipefail
+          gcloud beta run domain-mappings describe \
+            --domain "$BAD_ACTORS_DOMAIN" \
+            --project "$GCP_PROJECT_ID" \
+            --region "$GCP_CLOUD_RUN_REGION" \
+            --platform managed \
+            --format='yaml(status.conditions,status.resourceRecords,spec.routeName,metadata.name)'
+
+      - name: Verify public hostname if already switched
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          curl -fsS --retry 3 --retry-delay 2 --max-time 20 "https://${BAD_ACTORS_DOMAIN}/health" | tee /tmp/public-health.json
+          jq -e '.status == "ok" and .service == "bad-actors"' /tmp/public-health.json >/dev/null
+          echo "$BAD_ACTORS_DOMAIN is now serving Cloud Run directly."
