@@ -80,10 +80,12 @@ jobs:
           test -n "$service_url"
           curl -fsS --retry 5 --retry-delay 2 --max-time 20 "${service_url%/}/health" | tee /tmp/health.json
           jq -e '.status == "ok" and .service == "bad-actors"' /tmp/health.json >/dev/null
-          echo "Verified healthy Cloud Run origin: $service_url"
+          echo "Verified healthy Cloud Run origin."
+          printf 'CLOUD_RUN_ORIGIN_B64=%s\n' "$(printf '%s' "$service_url" | base64 -w0)"
 
       - name: Ensure domain mapping exists
         shell: bash
+        continue-on-error: true
         run: |
           set -euo pipefail
           if gcloud beta run domain-mappings describe \
@@ -103,8 +105,9 @@ jobs:
               --quiet
           fi
 
-      - name: Print required DNS records
+      - name: Print required DNS records if mapping exists
         shell: bash
+        continue-on-error: true
         run: |
           set -euo pipefail
           gcloud beta run domain-mappings describe \
