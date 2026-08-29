@@ -1,0 +1,87 @@
+name: Diagnose Google deployment access
+
+on:
+  push:
+    branches: [ops/gcp-access-diagnostic]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID || secrets.GCP_PROJECT_ID }}
+  GCP_CLOUD_RUN_REGION: ${{ vars.GCP_CLOUD_RUN_REGION || secrets.GCP_CLOUD_RUN_REGION }}
+  GCP_CLOUD_RUN_SERVICE: ${{ vars.GCP_CLOUD_RUN_SERVICE || secrets.GCP_CLOUD_RUN_SERVICE }}
+  GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER || secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+  GCP_SERVICE_ACCOUNT: ${{ vars.GCP_SERVICE_ACCOUNT || secrets.GCP_SERVICE_ACCOUNT }}
+  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Report configuration presence only
+        shell: bash
+        run: |
+          set -euo pipefail
+          present() { [[ -n "${!1:-}" ]] && echo yes || echo no; }
+          echo "GCP_PROJECT_ID=$(present GCP_PROJECT_ID)"
+          echo "GCP_CLOUD_RUN_REGION=$(present GCP_CLOUD_RUN_REGION)"
+          echo "GCP_CLOUD_RUN_SERVICE=$(present GCP_CLOUD_RUN_SERVICE)"
+          echo "GCP_WORKLOAD_IDENTITY_PROVIDER=$(present GCP_WORKLOAD_IDENTITY_PROVIDER)"
+          echo "GCP_SERVICE_ACCOUNT=$(present GCP_SERVICE_ACCOUNT)"
+          echo "GCP_SA_KEY=$(present GCP_SA_KEY)"
+
+      - name: Authenticate with Workload Identity
+        if: env.GCP_WORKLOAD_IDENTITY_PROVIDER != '' && env.GCP_SERVICE_ACCOUNT != ''
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
+
+      - name: Authenticate with service-account JSON
+        if: env.GCP_WORKLOAD_IDENTITY_PROVIDER == '' && env.GCP_SERVICE_ACCOUNT == '' && env.GCP_SA_KEY != ''
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ env.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        if: env.GCP_SA_KEY != '' || (env.GCP_WORKLOAD_IDENTITY_PROVIDER != '' && env.GCP_SERVICE_ACCOUNT != '')
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Read-only Cloud Run inventory
+        if: env.GCP_SA_KEY != '' || (env.GCP_WORKLOAD_IDENTITY_PROVIDER != '' && env.GCP_SERVICE_ACCOUNT != '')
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Active Google identity:"
+          gcloud auth list --filter=status:ACTIVE --format='value(account)'
+          echo "Accessible Cloud Run services:"
+          projects="$(gcloud projects list --format='value(projectId)' --limit=50)"
+          found=0
+          while IFS= read -r project; do
+            [[ -n "$project" ]] || continue
+            services="$(gcloud run services list --project "$project" --platform managed --format=json 2>/dev/null || true)"
+            rows="$(jq -r '.[]? | [.metadata.name, (.metadata.labels["cloud.googleapis.com/location"] // ""), (.status.url // "")] | @tsv' <<<"$services")"
+            if [[ -n "$rows" ]]; then
+              found=1
+              echo "PROJECT=$project"
+              printf '%s\n' "$rows"
+            fi
+          done <<<"$projects"
+          [[ "$found" == 1 ]] || echo "No readable Cloud Run services found."
+
+      - name: Check configured target read-only
+        if: env.GCP_PROJECT_ID != '' && env.GCP_CLOUD_RUN_REGION != '' && env.GCP_CLOUD_RUN_SERVICE != '' && (env.GCP_SA_KEY != '' || (env.GCP_WORKLOAD_IDENTITY_PROVIDER != '' && env.GCP_SERVICE_ACCOUNT != ''))
+        shell: bash
+        run: |
+          set -euo pipefail
+          gcloud run services describe "$GCP_CLOUD_RUN_SERVICE" \
+            --project "$GCP_PROJECT_ID" \
+            --region "$GCP_CLOUD_RUN_REGION" \
+            --platform managed \
+            --format='yaml(metadata.name,status.url,status.latestReadyRevisionName,spec.template.spec.containers[0].image)'
