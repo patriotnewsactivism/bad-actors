@@ -64,6 +64,10 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v3
 
+      - name: Install beta command group
+        shell: bash
+        run: gcloud components install beta --quiet
+
       - name: Verify Cloud Run service is healthy
         shell: bash
         run: |
@@ -95,7 +99,8 @@ jobs:
               --domain "$BAD_ACTORS_DOMAIN" \
               --project "$GCP_PROJECT_ID" \
               --region "$GCP_CLOUD_RUN_REGION" \
-              --platform managed
+              --platform managed \
+              --quiet
           fi
 
       - name: Print required DNS records
