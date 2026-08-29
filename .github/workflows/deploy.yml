@@ -39,7 +39,6 @@ jobs:
   deploy:
     name: Deploy existing Cloud Run service
     needs: quality
-    if: vars.GCP_DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: production
