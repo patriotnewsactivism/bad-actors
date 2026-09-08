@@ -14,6 +14,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { tracks } from "@/data/tracks";
 import SingleReleasePromo from "@/components/SingleReleasePromo";
+import MusicVideoSpotlight from "@/components/MusicVideoSpotlight";
 
 const TIMED_POPUP_SESSION_KEY = "timed_popup_shown";
 
@@ -370,6 +371,8 @@ This track chronicles the beginning of the Osteen investigation—where the firs
       />
 
       <div ref={heroSentinelRef} />
+
+      <MusicVideoSpotlight />
 
       <MiniPlayer
         visible={showMiniPlayer}
