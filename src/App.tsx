@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import Index from "./pages/Index";
+import MusicHome from "./pages/MusicHome";
 import TrackPage from "./pages/TrackPage";
 import TracksIndex from "./pages/TracksIndex";
 import About from "./pages/About";
@@ -21,7 +21,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<MusicHome />} />
             <Route path="/track/:slug" element={<TrackPage />} />
             <Route path="/tracks" element={<TracksIndex />} />
             <Route path="/about" element={<About />} />
