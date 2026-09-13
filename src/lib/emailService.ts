@@ -16,6 +16,10 @@ interface SaveSubscriberResult {
   success: boolean;
   duplicate: boolean;
   downloadUrl?: string;
+  emailSent?: boolean;
+  emailError?: string | null;
+  subscriberSaved?: boolean;
+  warning?: string | null;
 }
 
 const isConfigured = (): boolean => {
@@ -74,7 +78,7 @@ const sendDownloadEmail = async (
       templateParams.download_url = downloadUrl;
     }
 
-    const response = await emailjs.send(serviceId, templateId, templateParams);
+    await emailjs.send(serviceId, templateId, templateParams);
 
     return {
       success: true,
@@ -98,14 +102,28 @@ const saveSubscriber = async (
       body: JSON.stringify({ email, name, source }),
     });
 
+    const data = await response.json().catch(() => ({}));
+
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error('[Database] Failed to save subscriber:', errorData.error || response.statusText);
-      return { success: false, duplicate: false };
+      console.error('[Database] Failed to save subscriber:', data.error || response.statusText);
+      return {
+        success: false,
+        duplicate: false,
+        downloadUrl: data.downloadUrl,
+        emailSent: data.emailSent,
+        emailError: data.emailError || data.error || null,
+      };
     }
 
-    const data = await response.json();
-    return { success: data.success, duplicate: data.duplicate || false, downloadUrl: data.downloadUrl };
+    return {
+      success: data.success,
+      duplicate: data.duplicate || false,
+      downloadUrl: data.downloadUrl,
+      emailSent: data.emailSent,
+      emailError: data.emailError || null,
+      subscriberSaved: data.subscriberSaved,
+      warning: data.warning || null,
+    };
   } catch (error) {
     console.error('[Database] Error saving subscriber:', error);
     return { success: false, duplicate: false };
