@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { BookOpen, Download, ExternalLink, Headphones, Music2, Play, Sparkles } from "lucide-react";
 import EmailCapture from "@/components/EmailCapture";
+import SingleReleasePromo from "@/components/SingleReleasePromo";
 import { emailService } from "@/lib/emailService";
 import { stories, streamingLinks, tracks } from "@/data/tracks";
 import { toast } from "sonner";
@@ -289,24 +290,21 @@ const MusicHome = () => {
             </div>
           </div>
         </section>
+        <div id="special-releases">
+          <SingleReleasePromo
+            trackSlug="happy-fuck-the-cops-day"
+            title="Happy Fuck The Cops Day"
+            audioSrc="/audio/happy-fuck-the-cops-day.mp3"
+            countEndpoint="/api/single-download-count"
+            claimEndpoint="/api/single-download"
+            checkoutEndpoint="/api/single-checkout"
+            checkoutVerifyEndpoint="/api/single-checkout-verify"
+            cap={100}
+            price="$1.99"
+            coverImage="/images/happy-fuck-the-cops-day-cover.jpg"
+          />
+        </div>
 
-        <section id="special-releases" className="py-16 sm:py-24 border-b border-white/10">
-          <div className="container mx-auto px-4 max-w-6xl">
-            <div className="grid lg:grid-cols-2 gap-10 items-center">
-              <div>
-                <p className="text-crime-yellow text-sm font-semibold uppercase tracking-[0.18em] mb-3">Special promo release</p>
-                <h2 className="text-4xl sm:text-5xl font-semibold tracking-tight mb-5">Happy Fuck The Cops Day</h2>
-                <p className="text-zinc-400 leading-relaxed mb-6">
-                  Bad Actors also includes standalone promo releases outside the numbered album volumes. These singles keep the project current while the larger volumes continue to develop.
-                </p>
-                <audio controls preload="metadata" className="w-full max-w-xl" src="/audio/happy-fuck-the-cops-day.mp3" />
-              </div>
-              <div className="max-w-md mx-auto w-full border border-white/15 bg-zinc-950 p-3">
-                <img src="/images/happy-fuck-the-cops-day-cover.jpg" alt="Happy Fuck The Cops Day cover art" className="w-full aspect-square object-cover" />
-              </div>
-            </div>
-          </div>
-        </section>
 
         <section className="py-16 sm:py-24 border-b border-white/10 bg-zinc-950/35">
           <div className="container mx-auto px-4 max-w-6xl">

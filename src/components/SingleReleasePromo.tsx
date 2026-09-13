@@ -122,7 +122,7 @@ const SingleReleasePromo = ({
   };
 
   return (
-    <section className="relative w-full bg-gradient-to-b from-zinc-950 via-black to-zinc-950 border-y-4 border-crime-yellow py-12 sm:py-16 overflow-hidden">
+    <section id="single-release" className="relative w-full bg-gradient-to-b from-zinc-950 via-black to-zinc-950 border-y-4 border-crime-yellow py-12 sm:py-16 overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-crime-yellow/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container mx-auto px-4 relative z-10 max-w-3xl">
