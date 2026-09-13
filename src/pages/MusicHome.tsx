@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { BookOpen, Download, ExternalLink, Headphones, Music2, Play, Sparkles } from "lucide-react";
@@ -7,14 +7,23 @@ import { emailService } from "@/lib/emailService";
 import { stories, streamingLinks, tracks } from "@/data/tracks";
 import { toast } from "sonner";
 
+const FREE_ALBUM_ZIP = "/bad-actors-volume-1.zip";
+
 const MusicHome = () => {
   const [currentTrack, setCurrentTrack] = useState(1);
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const [downloadReadyUrl, setDownloadReadyUrl] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     emailService.init();
   }, []);
+
+  const playTrack = (trackNumber: number) => {
+    setCurrentTrack(trackNumber);
+    setIsPlaying(true);
+  };
 
   const storyByTrack = useMemo(() => {
     const map = new Map<number, (typeof stories)[number]>();
@@ -27,13 +36,31 @@ const MusicHome = () => {
   const activeTrack = tracks.find((track) => track.number === currentTrack) ?? tracks[0];
   const originStory = stories.find((story) => !story.trackNumber);
 
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el || !activeTrack.audioSrc) return;
+    if (!isPlaying) {
+      el.pause();
+      return;
+    }
+    const attempt = el.play();
+    if (attempt) {
+      attempt.catch(() => setIsPlaying(false));
+    }
+  }, [currentTrack, isPlaying, activeTrack.audioSrc]);
+
+
   const handleEmailSubmit = async (email: string, name?: string) => {
     const result = await emailService.saveSubscriber(email, name, "music-home-free-album");
+    const url = result.downloadUrl || FREE_ALBUM_ZIP;
+    setDownloadReadyUrl(url);
+    // Volume 1 must stay downloadable even if the subscriber DB / API is down.
     if (!result.success) {
-      toast.error("There was a problem preparing the download. Please try again.");
-      throw new Error("Subscriber save failed");
+      toast.message("Download ready", {
+        description: "Your free album is ready — email signup could not be saved right now.",
+      });
+      return;
     }
-    setDownloadReadyUrl(result.downloadUrl ?? null);
     toast.success("Your Bad Actors Volume 1 download is ready.");
   };
 
@@ -140,7 +167,24 @@ const MusicHome = () => {
                     </div>
                   </div>
                   {activeTrack.audioSrc ? (
-                    <audio key={activeTrack.audioSrc} controls preload="metadata" className="w-full" src={activeTrack.audioSrc} />
+                    <audio
+                      ref={audioRef}
+                      key={activeTrack.audioSrc}
+                      controls
+                      preload="metadata"
+                      className="w-full"
+                      src={activeTrack.audioSrc}
+                      onPlay={() => setIsPlaying(true)}
+                      onPause={() => setIsPlaying(false)}
+                      onEnded={() => {
+                        const idx = tracks.findIndex((t) => t.number === currentTrack);
+                        if (idx >= 0 && idx < tracks.length - 1) {
+                          playTrack(tracks[idx + 1].number);
+                        } else {
+                          setIsPlaying(false);
+                        }
+                      }}
+                    />
                   ) : (
                     <p className="text-sm text-zinc-500">Audio preview unavailable for this track.</p>
                   )}
@@ -172,7 +216,7 @@ const MusicHome = () => {
                     >
                       <div className="flex items-center gap-3 p-4 sm:p-5">
                         <button
-                          onClick={() => setCurrentTrack(track.number)}
+                          onClick={() => playTrack(track.number)}
                           className={`w-10 h-10 shrink-0 flex items-center justify-center border ${selected ? "border-police-red bg-police-red text-white" : "border-white/15 text-zinc-400 hover:text-white"}`}
                           aria-label={`Play ${track.title}`}
                         >
@@ -212,28 +256,34 @@ const MusicHome = () => {
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               {tracks.map((track) => {
                 const story = storyByTrack.get(track.number);
                 if (!story) return null;
                 return (
-                  <details id={`story-${track.number}`} key={track.number} className="group border border-white/10 bg-black open:border-police-red/40">
-                    <summary className="cursor-pointer list-none p-5 sm:p-6 flex items-center gap-4">
-                      <span className="text-sm font-mono text-police-red w-8">{String(track.number).padStart(2, "0")}</span>
-                      <div className="flex-1">
-                        <h3 className="text-xl sm:text-2xl font-medium">{story.title}</h3>
-                        <p className="text-sm text-zinc-500 mt-1">Read the true story that inspired this track</p>
+                  <article
+                    id={`story-${track.number}`}
+                    key={track.number}
+                    className="scroll-mt-28 border border-white/10 border-l-4 border-l-police-red bg-black p-5 sm:p-8"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6 mb-5">
+                      <span className="text-sm font-mono text-police-red w-10 shrink-0 pt-1">{String(track.number).padStart(2, "0")}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs uppercase tracking-[0.16em] text-zinc-500 mb-2">True story behind the song</p>
+                        <h3 className="text-xl sm:text-2xl font-semibold leading-tight">{story.title}</h3>
                       </div>
-                      <BookOpen className="w-5 h-5 text-zinc-500 group-open:text-police-red" />
-                    </summary>
-                    <div className="px-5 sm:px-6 pb-6 sm:pb-8 sm:pl-[72px]">
-                      <div className="max-w-4xl text-zinc-300 leading-7 whitespace-pre-line">{story.content}</div>
-                      <div className="mt-5 flex gap-4">
-                        <button onClick={() => setCurrentTrack(track.number)} className="text-sm text-police-red hover:text-red-300">Play this track ↑</button>
-                        <Link to={`/track/${track.slug}`} className="text-sm text-zinc-400 hover:text-white">Open full song page →</Link>
-                      </div>
+                      <BookOpen className="w-5 h-5 text-police-red shrink-0" />
                     </div>
-                  </details>
+                    <div className="sm:pl-16 max-w-4xl text-zinc-300 leading-7 whitespace-pre-line">{story.content}</div>
+                    <div className="sm:pl-16 mt-6 flex flex-wrap gap-4">
+                      <button onClick={() => playTrack(track.number)} className="text-sm font-medium text-police-red hover:text-red-300">
+                        Play this track
+                      </button>
+                      <Link to={`/track/${track.slug}`} className="text-sm text-zinc-400 hover:text-white">
+                        Open full song page →
+                      </Link>
+                    </div>
+                  </article>
                 );
               })}
             </div>
