@@ -53,8 +53,26 @@ export default async function handler(req, res) {
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('[API] Supabase not configured');
-    return res.status(500).json({ error: 'Database not configured' });
+    console.error('[API] Supabase not configured — still returning free album download URL');
+    // Keep Volume 1 downloadable even when the subscriber DB is down.
+    if (process.env.RESEND_API_KEY) {
+      void sendResend(
+        process.env.RESEND_API_KEY,
+        email.toLowerCase().trim(),
+        "Your free download: Bad Actors - Volume 1",
+        `<p>Hey${name ? " " + name : ""},</p>
+         <p>Thanks for checking out <strong>Bad Actors - Volume 1</strong>. Here's your free download:</p>
+         <p><a href="${ZIP_URL}">${ZIP_URL}</a></p>
+         <p>— Don Matthews</p>`
+      );
+    }
+    void forwardLeadToBuildMyBot(email.toLowerCase().trim(), source || "badactors.online/subscribe", name);
+    return res.status(200).json({
+      success: true,
+      duplicate: false,
+      downloadUrl: ZIP_URL,
+      warning: "Database not configured",
+    });
   }
 
   const cleanEmail = email.toLowerCase().trim();
