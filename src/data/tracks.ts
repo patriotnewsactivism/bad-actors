@@ -39,12 +39,12 @@ export const tracks: Track[] = [
   { number: 17, title: "Scandalous", slug: "scandalous", duration: "3:14", durationISO: "PT3M14S" , audioSrc: "/audio/scandalous.m4a" },
 ];
 
+// Major-store (Spotify / Apple Music / etc.) distribution was pulled and needs re-upload
+// with new UPC/ISRC codes. Until then, only link platforms that still host Volume 1.
 export const streamingLinks: StreamingLink[] = [
-  { platform: "Apple Music", url: "https://music.apple.com/au/album/bad-actors-volume-1/1863402949" },
-  { platform: "Spotify", url: "https://open.spotify.com/album/bad-actors-volume-1" },
-  { platform: "YouTube Music", url: "https://music.youtube.com/playlist?list=OLAK5uy_m5AmZDrY2kX__kNhYE1jkhmY1LLTZi1cE&si=dyuOTX4AcfYaUuo0" },
-  { platform: "BandLab", url: "https://www.bandlab.com/badactors" },
   { platform: "SoundCloud", url: "https://soundcloud.com/don-matthews-268378810/sets/bad-actors-volume-1" },
+  { platform: "YouTube Music", url: "https://music.youtube.com/playlist?list=OLAK5uy_m5AmZDrY2kX__kNhYE1jkhmY1LLTZi1cE" },
+  { platform: "BandLab", url: "https://www.bandlab.com/badactors" },
 ];
 
 export const stories: Story[] = [

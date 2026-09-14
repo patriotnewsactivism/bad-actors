@@ -1,11 +1,10 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Play, ArrowLeft, ArrowRight, Music, ExternalLink, Home } from "lucide-react";
 import { tracks, stories, streamingLinks, getTrackBySlug, getStoryByTrackNumber } from "@/data/tracks";
 
 const TrackPage = () => {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
   const track = getTrackBySlug(slug || "");
 
   if (!track) {
@@ -203,24 +202,37 @@ const TrackPage = () => {
                 by <Link to="/about" className="text-white hover:text-police-red transition-colors font-bold">Don Matthews</Link>
               </p>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-4">
-                <Link
-                  to={`/?play=${track.number}`}
-                  className="flex items-center gap-2 bg-police-red text-white px-6 py-3 font-black uppercase tracking-wider hover:bg-red-700 transition-colors"
-                >
-                  <Play className="w-5 h-5" fill="white" />
-                  Play Track
-                </Link>
-                <a
-                  href={streamingLinks[0]?.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 border-2 border-white/20 text-white px-6 py-3 font-bold hover:border-police-red hover:text-police-red transition-colors"
-                >
-                  <ExternalLink className="w-5 h-5" />
-                  Stream on Apple Music
-                </a>
+              {/* On-page player + actions */}
+              <div className="space-y-4 max-w-xl">
+                {track.audioSrc ? (
+                  <audio
+                    controls
+                    autoPlay
+                    preload="metadata"
+                    className="w-full"
+                    src={track.audioSrc}
+                  />
+                ) : null}
+                <div className="flex flex-wrap gap-4">
+                  <Link
+                    to={`/?play=${track.number}`}
+                    className="flex items-center gap-2 bg-police-red text-white px-6 py-3 font-black uppercase tracking-wider hover:bg-red-700 transition-colors"
+                  >
+                    <Play className="w-5 h-5" fill="white" />
+                    Play on album page
+                  </Link>
+                  {streamingLinks[0] && (
+                    <a
+                      href={streamingLinks[0].url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 border-2 border-white/20 text-white px-6 py-3 font-bold hover:border-police-red hover:text-police-red transition-colors"
+                    >
+                      <ExternalLink className="w-5 h-5" />
+                      Stream on {streamingLinks[0].platform}
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           </div>

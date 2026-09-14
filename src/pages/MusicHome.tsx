@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { BookOpen, Download, ExternalLink, Headphones, Music2, Play, Sparkles } from "lucide-react";
 import EmailCapture from "@/components/EmailCapture";
@@ -25,6 +25,24 @@ const MusicHome = () => {
     setCurrentTrack(trackNumber);
     setIsPlaying(true);
   };
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const raw = searchParams.get("play");
+    if (!raw) return;
+    const n = Number.parseInt(raw, 10);
+    if (!Number.isFinite(n) || n < 1 || n > tracks.length) return;
+    playTrack(n);
+    requestAnimationFrame(() => {
+      document.getElementById("volume-one")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    const next = new URLSearchParams(searchParams);
+    next.delete("play");
+    setSearchParams(next, { replace: true });
+    // Honor deep link once on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const storyByTrack = useMemo(() => {
     const map = new Map<number, (typeof stories)[number]>();
