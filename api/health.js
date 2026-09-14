@@ -1,3 +1,4 @@
+// Reports integration readiness only; secret values are never returned.
 export default function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('Access-Control-Allow-Origin', '*');
