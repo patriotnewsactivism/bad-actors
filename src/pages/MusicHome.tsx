@@ -9,6 +9,8 @@ import { stories, streamingLinks, tracks } from "@/data/tracks";
 import { toast } from "sonner";
 
 const FREE_ALBUM_ZIP = "/bad-actors-volume-1.zip";
+const OFFICIAL_VIDEO_POSTER =
+  "https://drive.google.com/thumbnail?id=1EevhM1pWo9ynfnKJTXy_nozYthPncWbc&sz=w1200";
 
 const MusicHome = () => {
   const [currentTrack, setCurrentTrack] = useState(1);
@@ -91,6 +93,8 @@ const MusicHome = () => {
           name="description"
           content="Bad Actors is Don Matthews' documentary music project: true stories about power, corruption, retaliation and accountability turned into songs. Download Volume 1 free, read the stories behind all 17 tracks, hear special releases, and follow Volumes 2 and 3."
         />
+        <meta property="og:image" content={OFFICIAL_VIDEO_POSTER} />
+        <meta name="twitter:image" content={OFFICIAL_VIDEO_POSTER} />
       </Helmet>
 
       <header className="border-b border-white/10 bg-black/95 sticky top-0 z-40 backdrop-blur">
@@ -115,15 +119,23 @@ const MusicHome = () => {
       <main id="top">
         <section className="border-b border-police-red/40 bg-gradient-to-r from-police-red/20 via-black to-crime-yellow/10">
           <div className="container mx-auto px-4 py-5 sm:py-6 max-w-7xl">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <div>
+            <div className="grid grid-cols-[88px_1fr] sm:grid-cols-[116px_1fr] lg:grid-cols-[132px_1fr_auto] items-center gap-4 sm:gap-6">
+              <a href="#single-release" className="block overflow-hidden border border-crime-yellow/60 bg-black shadow-xl">
+                <img
+                  src={OFFICIAL_VIDEO_POSTER}
+                  alt="Happy Fuck The Cops Day official music video poster"
+                  className="w-full aspect-square object-cover"
+                  loading="eager"
+                />
+              </a>
+              <div className="min-w-0">
                 <p className="text-crime-yellow text-xs sm:text-sm font-black uppercase tracking-[0.2em] mb-1">Official Music Video Release</p>
-                <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight">Happy Fuck The Cops Day</h2>
-                <p className="text-zinc-300 mt-1">Don Matthews · Outlawed Productions · Released September 17, 2026</p>
+                <h2 className="text-xl sm:text-3xl font-black uppercase tracking-tight leading-tight">Happy Fuck The Cops Day</h2>
+                <p className="text-zinc-300 mt-1 text-sm sm:text-base">Don Matthews · Outlawed Productions · Released September 17, 2026</p>
               </div>
               <a
                 href="#single-release"
-                className="inline-flex items-center justify-center gap-2 bg-police-red px-6 py-3 font-bold uppercase tracking-wide hover:bg-red-700 transition-colors"
+                className="col-span-2 lg:col-span-1 inline-flex items-center justify-center gap-2 bg-police-red px-6 py-3 font-bold uppercase tracking-wide hover:bg-red-700 transition-colors"
               >
                 <Play className="w-5 h-5" fill="currentColor" />
                 Watch Official Video
