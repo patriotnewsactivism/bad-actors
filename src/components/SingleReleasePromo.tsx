@@ -18,12 +18,13 @@ interface SingleReleasePromoProps {
 
 const OFFICIAL_VIDEO_BY_TRACK: Record<
   string,
-  { embedUrl: string; watchUrl: string; releaseDate: string }
+  { embedUrl: string; watchUrl: string; releaseDate: string; posterUrl: string }
 > = {
   "happy-fuck-the-cops-day": {
     embedUrl: "https://drive.google.com/file/d/1sAPNizkDruyqtAzINh7Eet1-Alc6g6IV/preview",
     watchUrl: "https://drive.google.com/file/d/1sAPNizkDruyqtAzINh7Eet1-Alc6g6IV/view",
     releaseDate: "September 17, 2026",
+    posterUrl: "https://drive.google.com/thumbnail?id=1EevhM1pWo9ynfnKJTXy_nozYthPncWbc&sz=w1200",
   },
 };
 
@@ -156,6 +157,24 @@ const SingleReleasePromo = ({
 
         {officialVideo && (
           <div className="mb-10">
+            <a
+              href={officialVideo.watchUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="group block max-w-xl mx-auto mb-6 border-2 border-crime-yellow/70 bg-black shadow-[0_0_55px_rgba(250,204,21,0.12)] overflow-hidden"
+              aria-label={`Watch ${title} official music video`}
+            >
+              <img
+                src={officialVideo.posterUrl}
+                alt={`${title} — Official Music Video poster artwork`}
+                className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-[1.015]"
+                loading="eager"
+              />
+              <div className="flex items-center justify-center gap-2 border-t border-crime-yellow/40 bg-black/95 px-4 py-3 text-sm font-black uppercase tracking-[0.16em] text-crime-yellow">
+                <Play className="w-4 h-4" fill="currentColor" />
+                Official Music Video
+              </div>
+            </a>
             <div className="relative aspect-video overflow-hidden border-2 border-police-red bg-black shadow-[0_0_60px_rgba(220,38,38,0.16)]">
               <iframe
                 src={officialVideo.embedUrl}
