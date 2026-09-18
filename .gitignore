@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Rendered music videos kept outside Git/GitHub
+Don_Matthews_Blue_Wall_Remix_FINAL_SMALL_OUTLAWED_LOGO.mp4
+Don_Matthews_Blue_Wall_Remix_UNIFORM_GEMINI_COVERED_LOGO_FINAL.mp4
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
