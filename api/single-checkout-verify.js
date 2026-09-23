@@ -1,3 +1,5 @@
+import { licenseEmailHtml } from "./license-copy.js";
+
 // Verifies a returned Stripe Checkout Session server-side (never trusts the
 // client) and delivers the download by email exactly once per session_id,
 // enforced by a unique constraint on single_purchases.session_id.
@@ -108,7 +110,8 @@ export default async function handler(req, res) {
           `Your purchase: ${trackInfo.title}`,
           `<p>Thanks for buying <strong>${trackInfo.title}</strong>! Here's your download:</p>
            <p><a href="${trackInfo.fileUrl}">${trackInfo.fileUrl}</a></p>
-           <p>Truth. Justice. Accountability.<br/>— Don Matthews</p>`
+           <p>Truth. Justice. Accountability.<br/>— Don Matthews</p>
+           ${licenseEmailHtml({ paid: true })}`
         );
         void sendResend(
           resendKey,

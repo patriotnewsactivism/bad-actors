@@ -6,6 +6,7 @@ import { Mail, Download, Loader2, CheckCircle, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import LicenseNotice from "@/components/LicenseNotice";
 
 const emailSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -78,6 +79,7 @@ const InlineEmailCapture = ({ onSubmit, subscriberCount, downloadUrl }: InlineEm
                 Download Now
               </a>
             )}
+            <LicenseNotice className="max-w-xl mx-auto" />
           </div>
         </div>
       </section>
@@ -160,6 +162,7 @@ const InlineEmailCapture = ({ onSubmit, subscriberCount, downloadUrl }: InlineEm
               <p className="text-zinc-600 text-xs text-center uppercase tracking-wide">
                 No spam. Unsubscribe anytime. Your email is secure.
               </p>
+              <LicenseNotice />
             </div>
           </form>
         </div>

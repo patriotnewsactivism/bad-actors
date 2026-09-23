@@ -1,3 +1,5 @@
+import { licenseEmailHtml } from "./license-copy.js";
+
 // Free-download promo for standalone singles (e.g. "Happy Fuck The Cops Day").
 // Caps free claims at N (default 100) per track via an atomic Postgres RPC
 // (claim_single_download) that advisory-locks per track_slug, so concurrent
@@ -137,7 +139,8 @@ export default async function handler(req, res) {
         `<p>Hey${name ? " " + name : ""},</p>
          <p>Thanks for grabbing <strong>${trackInfo.title}</strong> — you're one of the first 100 free downloads. Here's your file:</p>
          <p><a href="${trackInfo.fileUrl}">${trackInfo.fileUrl}</a></p>
-         <p>Truth. Justice. Accountability.<br/>— Don Matthews</p>`
+         <p>Truth. Justice. Accountability.<br/>— Don Matthews</p>
+         ${licenseEmailHtml()}`
       );
       if (!result.already_claimed) {
         void sendResend(

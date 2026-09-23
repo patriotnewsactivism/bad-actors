@@ -1,3 +1,5 @@
+import { licenseEmailHtml } from "./license-copy.js";
+
 const ZIP_URL = "https://badactors.online/bad-actors-volume-1.zip";
 const NOTIFY_EMAIL = "don@donmatthews.live";
 const FROM = "Bad Actors <downloads@donmatthews.live>";
@@ -41,7 +43,8 @@ function albumEmailHtml(name) {
   return `<p>Hey${name ? " " + name : ""},</p>
     <p>Thanks for checking out <strong>Bad Actors - Volume 1</strong>. Here's your free download — all 17 tracks, in order, zipped up and ready to go:</p>
     <p><a href="${ZIP_URL}">${ZIP_URL}</a></p>
-    <p>Truth. Justice. Accountability.<br/>— Don Matthews</p>`;
+    <p>Truth. Justice. Accountability.<br/>— Don Matthews</p>
+    ${licenseEmailHtml()}`;
 }
 
 async function deliverAlbumEmail(resendKey, email, name) {

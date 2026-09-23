@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Mail, Download, Loader2, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import LicenseNotice from "@/components/LicenseNotice";
 
 const emailSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -101,6 +102,7 @@ const EmailCapture = ({ isOpen, onClose, onSubmit, downloadUrl }: EmailCapturePr
                 Download Now
               </a>
             )}
+            <LicenseNotice className="px-2" />
             <Button
               onClick={handleClose}
               className="bg-black border-2 border-police-red text-foreground font-bold uppercase tracking-wide hover:bg-police-red hover:text-white transition-all duration-300"
@@ -163,6 +165,7 @@ const EmailCapture = ({ isOpen, onClose, onSubmit, downloadUrl }: EmailCapturePr
             <p className="text-muted-foreground text-xs text-center uppercase tracking-wide">
               We respect your privacy. No spam, ever.
             </p>
+            <LicenseNotice />
           </form>
         )}
       </DialogContent>

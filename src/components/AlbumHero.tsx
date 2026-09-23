@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Music, ExternalLink, Download, Play, Pause, Disc3 } from "lucide-react";
 import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube";
+import LicenseNotice from "@/components/LicenseNotice";
 
 interface StreamingLink {
   platform: string;
@@ -209,6 +210,7 @@ const AlbumHero = ({
                 )}
               </div>
 
+              <div className="space-y-3">
               <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-3 justify-center lg:justify-start">
                 <button
                   onClick={onDownloadClick}
@@ -239,6 +241,8 @@ const AlbumHero = ({
                     <ExternalLink className="w-4 h-4" />
                   </a>
                 ))}
+              </div>
+              <LicenseNotice className="max-w-xl mx-auto lg:mx-0 lg:[&_p]:text-left" />
               </div>
             </div>
 
