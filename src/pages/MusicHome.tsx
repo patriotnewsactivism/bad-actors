@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { BookOpen, Download, ExternalLink, Headphones, Music2, Play, Sparkles } from "lucide-react";
 import EmailCapture from "@/components/EmailCapture";
 import SingleReleasePromo from "@/components/SingleReleasePromo";
+import LicenseNotice from "@/components/LicenseNotice";
 import { emailService } from "@/lib/emailService";
 import { stories, streamingLinks, tracks } from "@/data/tracks";
 import { toast } from "sonner";
@@ -179,6 +180,7 @@ const MusicHome = () => {
                     Read the stories behind the songs
                   </a>
                 </div>
+                <LicenseNotice className="mt-4 max-w-xl lg:[&_p]:text-left" />
               </div>
 
               <div className="max-w-md mx-auto w-full">
@@ -405,9 +407,12 @@ const MusicHome = () => {
                 <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-3">Download Bad Actors Volume 1 free.</h2>
                 <p className="text-zinc-400">Seventeen songs. Seventeen stories. One continuing record of accountability.</p>
               </div>
-              <button onClick={() => setIsDownloadOpen(true)} className="inline-flex items-center justify-center gap-2 bg-police-red px-6 py-3.5 font-semibold hover:bg-red-700 transition-colors">
-                <Download className="w-5 h-5" /> Free download
-              </button>
+              <div className="flex flex-col gap-3 items-stretch lg:items-end">
+                <button onClick={() => setIsDownloadOpen(true)} className="inline-flex items-center justify-center gap-2 bg-police-red px-6 py-3.5 font-semibold hover:bg-red-700 transition-colors">
+                  <Download className="w-5 h-5" /> Free download
+                </button>
+                <LicenseNotice className="max-w-sm lg:[&_p]:text-right" />
+              </div>
             </div>
           </div>
         </section>

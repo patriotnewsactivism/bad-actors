@@ -5,6 +5,7 @@ import { z } from "zod";
 import { Mail, Loader2, CheckCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import LicenseNotice from "@/components/LicenseNotice";
 
 const emailSchema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -97,6 +98,7 @@ const FooterEmailForm = ({ onSubmit, subscriberCount }: FooterEmailFormProps) =>
       {errors.email && (
         <p className="text-police-red text-xs font-bold">{errors.email.message}</p>
       )}
+      <LicenseNotice className="text-left [&_p]:text-left" />
     </div>
   );
 };

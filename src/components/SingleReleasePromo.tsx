@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Play, Pause, Download, Loader2, CheckCircle, Flame, CreditCard, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import LicenseNotice from "@/components/LicenseNotice";
 
 interface SingleReleasePromoProps {
   trackSlug: string;
@@ -273,6 +274,7 @@ const SingleReleasePromo = ({
                     Download Now
                   </a>
                 )}
+                <LicenseNotice variant={isPaidPurchase ? "paid" : "free"} />
               </div>
             ) : soldOut ? (
               <div className="space-y-3">
@@ -303,6 +305,7 @@ const SingleReleasePromo = ({
                     Something went wrong. Please try again.
                   </p>
                 )}
+                <LicenseNotice variant="paid" />
               </div>
             ) : (
               <form onSubmit={handleFreeSubmit} className="space-y-3">
@@ -344,6 +347,7 @@ const SingleReleasePromo = ({
                 <p className="text-muted-foreground text-xs text-center uppercase tracking-wide">
                   We respect your privacy. No spam, ever. {price} after the first {cap} claims.
                 </p>
+                <LicenseNotice />
               </form>
             )}
           </div>
