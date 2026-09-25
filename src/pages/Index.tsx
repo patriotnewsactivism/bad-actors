@@ -243,8 +243,8 @@ This track chronicles the beginning of the Osteen investigation—where the firs
     },
     {
       trackNumber: 12,
-      title: "Land of the Free, Unless Its Me",
-      content: `"Land of the Free, Unless Its Me" confronts the bitter irony at the heart of American justice: the freedoms we celebrate don't apply equally to everyone. This track examines how constitutional protections evaporate when you become a target, how rights become privileges revoked at the discretion of those in power.`
+      title: "Land of the Free, Unless It's Me",
+      content: `"Land of the Free, Unless It's Me" confronts the bitter irony at the heart of American justice: the freedoms we celebrate don't apply equally to everyone. This track examines how constitutional protections evaporate when you become a target, how rights become privileges revoked at the discretion of those in power.`
     },
     {
       trackNumber: 13,
@@ -263,7 +263,7 @@ This track chronicles the beginning of the Osteen investigation—where the firs
     },
     {
       trackNumber: 16,
-      title: "Governors Gone Too Far",
+      title: "Governor's Gone Too Far",
       content: `When corruption reaches the highest levels of state government, when the governor's office itself becomes complicit in covering up injustice, someone has to say it out loud: The Governor's Gone Too Far.`
     },
     {

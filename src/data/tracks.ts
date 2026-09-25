@@ -31,11 +31,11 @@ export const tracks: Track[] = [
   { number: 9, title: "Eleven Months Too Long", slug: "eleven-months-too-long", duration: "3:48", durationISO: "PT3M48S" , audioSrc: "/audio/eleven-months-too-long.m4a" },
   { number: 10, title: "Caught Red Handed", slug: "caught-red-handed", duration: "4:00", durationISO: "PT4M0S" , audioSrc: "/audio/caught-red-handed.m4a" },
   { number: 11, title: "Osteen Lied", slug: "osteen-lied", duration: "3:36", durationISO: "PT3M36S" , audioSrc: "/audio/osteen-lied.m4a" },
-  { number: 12, title: "Land of the Free, Unless Its Me", slug: "land-of-the-free-unless-its-me", duration: "4:12", durationISO: "PT4M12S" , audioSrc: "/audio/land-of-the-free-unless-its-me.m4a" },
+  { number: 12, title: "Land of the Free, Unless It's Me", slug: "land-of-the-free-unless-its-me", duration: "4:12", durationISO: "PT4M12S" , audioSrc: "/audio/land-of-the-free-unless-its-me.m4a" },
   { number: 13, title: "She Called The State", slug: "she-called-the-state", duration: "3:55", durationISO: "PT3M55S" , audioSrc: "/audio/she-called-the-state.m4a" },
   { number: 14, title: "Osteen's Fall", slug: "osteens-fall", duration: "3:27", durationISO: "PT3M27S" , audioSrc: "/audio/osteens-fall.m4a" },
   { number: 15, title: "The Gaslight Anthem", slug: "the-gaslight-anthem", duration: "2:29", durationISO: "PT2M29S" , audioSrc: "/audio/the-gaslight-anthem.m4a" },
-  { number: 16, title: "Governors Gone Too Far", slug: "governors-gone-too-far", duration: "3:22", durationISO: "PT3M22S" , audioSrc: "/audio/governors-gone-too-far.m4a" },
+  { number: 16, title: "Governor's Gone Too Far", slug: "governors-gone-too-far", duration: "3:22", durationISO: "PT3M22S" , audioSrc: "/audio/governors-gone-too-far.m4a" },
   { number: 17, title: "Scandalous", slug: "scandalous", duration: "3:14", durationISO: "PT3M14S" , audioSrc: "/audio/scandalous.m4a" },
 ];
 
@@ -109,8 +109,8 @@ export const stories: Story[] = [
   },
   {
     trackNumber: 12,
-    title: "Land of the Free, Unless Its Me",
-    content: `"Land of the Free, Unless Its Me" confronts the bitter irony at the heart of American justice: the freedoms we celebrate don't apply equally to everyone. This track examines how constitutional protections evaporate when you become a target, how rights become privileges revoked at the discretion of those in power.`
+    title: "Land of the Free, Unless It's Me",
+    content: `"Land of the Free, Unless It's Me" confronts the bitter irony at the heart of American justice: the freedoms we celebrate don't apply equally to everyone. This track examines how constitutional protections evaporate when you become a target, how rights become privileges revoked at the discretion of those in power.`
   },
   {
     trackNumber: 13,
@@ -129,7 +129,7 @@ export const stories: Story[] = [
   },
   {
     trackNumber: 16,
-    title: "Governors Gone Too Far",
+    title: "Governor's Gone Too Far",
     content: `When corruption reaches the highest levels of state government, when the governor's office itself becomes complicit in covering up injustice, someone has to say it out loud: The Governor's Gone Too Far.`
   },
   {
