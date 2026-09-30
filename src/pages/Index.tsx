@@ -218,7 +218,7 @@ This track chronicles the beginning of the Osteen investigation—where the firs
     },
     {
       trackNumber: 7,
-      title: "A Warrant For A Lie",
+      title: "A Warrant for a Lie",
       content: `They swore an oath. They signed their names. They stood before a judge and declared it was the truth. But it wasn't. This is the story of a warrant built on fabrications—a legal document that should represent justice, instead weaponized to destroy an innocent life.`
     },
     {
@@ -248,8 +248,8 @@ This track chronicles the beginning of the Osteen investigation—where the firs
     },
     {
       trackNumber: 13,
-      title: "She Called The State",
-      content: `"She Called The State" documents the moment when personal conflict became state-sponsored persecution. This track examines how a single phone call can activate an entire apparatus of government power against an individual.`
+      title: "She Called the State",
+      content: `"She Called the State" documents the moment when personal conflict became state-sponsored persecution. This track examines how a single phone call can activate an entire apparatus of government power against an individual.`
     },
     {
       trackNumber: 14,
