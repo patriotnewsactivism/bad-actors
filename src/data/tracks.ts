@@ -26,13 +26,13 @@ export const tracks: Track[] = [
   { number: 4, title: "Double Dipped", slug: "double-dipped", duration: "4:17", durationISO: "PT4M17S" , audioSrc: "/audio/double-dipped.m4a" },
   { number: 5, title: "Morgan County Blues", slug: "morgan-county-blues", duration: "4:04", durationISO: "PT4M4S" , audioSrc: "/audio/morgan-county-blues.m4a" },
   { number: 6, title: "The Osteen Files (Exhibit L)", slug: "the-osteen-files-exhibit-l", duration: "3:50", durationISO: "PT3M50S" , audioSrc: "/audio/the-osteen-files-exhibit-l.m4a" },
-  { number: 7, title: "A Warrant For A Lie", slug: "a-warrant-for-a-lie", duration: "3:34", durationISO: "PT3M34S" , audioSrc: "/audio/a-warrant-for-a-lie.m4a" },
+  { number: 7, title: "A Warrant for a Lie", slug: "a-warrant-for-a-lie", duration: "3:34", durationISO: "PT3M34S" , audioSrc: "/audio/a-warrant-for-a-lie.m4a" },
   { number: 8, title: "The Crowder Files", slug: "the-crowder-files", duration: "3:33", durationISO: "PT3M33S" , audioSrc: "/audio/the-crowder-files.m4a" },
   { number: 9, title: "Eleven Months Too Long", slug: "eleven-months-too-long", duration: "3:48", durationISO: "PT3M48S" , audioSrc: "/audio/eleven-months-too-long.m4a" },
   { number: 10, title: "Caught Red Handed", slug: "caught-red-handed", duration: "4:00", durationISO: "PT4M0S" , audioSrc: "/audio/caught-red-handed.m4a" },
   { number: 11, title: "Osteen Lied", slug: "osteen-lied", duration: "3:36", durationISO: "PT3M36S" , audioSrc: "/audio/osteen-lied.m4a" },
   { number: 12, title: "Land of the Free, Unless It's Me", slug: "land-of-the-free-unless-its-me", duration: "4:12", durationISO: "PT4M12S" , audioSrc: "/audio/land-of-the-free-unless-its-me.m4a" },
-  { number: 13, title: "She Called The State", slug: "she-called-the-state", duration: "3:55", durationISO: "PT3M55S" , audioSrc: "/audio/she-called-the-state.m4a" },
+  { number: 13, title: "She Called the State", slug: "she-called-the-state", duration: "3:55", durationISO: "PT3M55S" , audioSrc: "/audio/she-called-the-state.m4a" },
   { number: 14, title: "Osteen's Fall", slug: "osteens-fall", duration: "3:27", durationISO: "PT3M27S" , audioSrc: "/audio/osteens-fall.m4a" },
   { number: 15, title: "The Gaslight Anthem", slug: "the-gaslight-anthem", duration: "2:29", durationISO: "PT2M29S" , audioSrc: "/audio/the-gaslight-anthem.m4a" },
   { number: 16, title: "Governor's Gone Too Far", slug: "governors-gone-too-far", duration: "3:22", durationISO: "PT3M22S" , audioSrc: "/audio/governors-gone-too-far.m4a" },
@@ -84,7 +84,7 @@ export const stories: Story[] = [
   },
   {
     trackNumber: 7,
-    title: "A Warrant For A Lie",
+    title: "A Warrant for a Lie",
     content: `They swore an oath. They signed their names. They stood before a judge and declared it was the truth. But it wasn't. This is the story of a warrant built on fabrications—a legal document that should represent justice, instead weaponized to destroy an innocent life.`
   },
   {
@@ -114,8 +114,8 @@ export const stories: Story[] = [
   },
   {
     trackNumber: 13,
-    title: "She Called The State",
-    content: `"She Called The State" documents the moment when personal conflict became state-sponsored persecution. This track examines how a single phone call can activate an entire apparatus of government power against an individual.`
+    title: "She Called the State",
+    content: `"She Called the State" documents the moment when personal conflict became state-sponsored persecution. This track examines how a single phone call can activate an entire apparatus of government power against an individual.`
   },
   {
     trackNumber: 14,
